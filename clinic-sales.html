@@ -7,71 +7,170 @@
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <style>
-  :root{--bg:#EEF6FF;--surface:#FFFFFF;--border:#C8DFF7;--border2:#A8C8F0;--bb-cobalt:#0057B8;--bb-sky:#1A8FE3;--bb-aqua:#00B4D8;--bb-light:#90D7F0;--bb-pale:#D6EEFC;--text:#0A2540;--muted:#5A7A9A;--dc:#0057B8;--south:#1A8FE3;--sw:#0096C7;--west:#00B4D8;--chicago:#2EC4E0}
-  *{box-sizing:border-box;margin:0;padding:0}body{background:var(--bg);color:var(--text);font-family:'Nunito',sans-serif;min-height:100vh}
-  body::before{content:'';position:fixed;top:-300px;left:-100px;right:-100px;height:600px;background:radial-gradient(ellipse at 65% 0%,#90D7F030 0%,transparent 70%),radial-gradient(ellipse at 5% 40%,#0057B80D 0%,transparent 60%);pointer-events:none;z-index:0}
-  .wrapper{position:relative;z-index:1;max-width:1280px;margin:0 auto;padding:2rem}
-  header{display:flex;align-items:center;justify-content:space-between;margin-bottom:2rem;padding-bottom:1.25rem;border-bottom:2px solid var(--bb-pale)}
-  .logo-area{display:flex;align-items:center;gap:14px}.logo-mark{width:46px;height:46px;border-radius:12px;background:var(--bb-cobalt);display:flex;align-items:center;justify-content:center;font-size:1.1rem;font-weight:900;color:white;letter-spacing:-1px;flex-shrink:0}
-  .header-left h1{font-size:1.5rem;font-weight:900;color:var(--bb-cobalt);letter-spacing:-0.02em;line-height:1.1}.header-left p{font-family:'DM Mono',monospace;font-size:0.62rem;color:var(--muted);margin-top:3px;letter-spacing:0.06em}
-  .live-badge{display:flex;align-items:center;gap:6px;background:#E8F5FF;border:1.5px solid var(--bb-light);border-radius:20px;padding:6px 14px;font-family:'DM Mono',monospace;font-size:0.62rem;color:var(--bb-cobalt);letter-spacing:0.07em}
-  .live-dot{width:7px;height:7px;border-radius:50%;background:#00C48C;animation:pulse 2s infinite}@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.3}}
-  .kpi-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin-bottom:1.25rem}.kpi{background:var(--surface);border-radius:14px;border:1.5px solid var(--border);padding:1rem 1.1rem;position:relative;overflow:hidden;transition:box-shadow 0.2s}
-  .kpi:hover{box-shadow:0 4px 18px rgba(0,87,184,0.1);border-color:var(--border2)}.kpi::after{content:'';position:absolute;bottom:0;left:0;right:0;height:3px;border-radius:0 0 12px 12px}
-  .kpi.total::after{background:linear-gradient(90deg,var(--dc),var(--south),var(--sw),var(--west),var(--chicago))}.kpi.dc::after{background:var(--dc)}.kpi.south::after{background:var(--south)}.kpi.sw::after{background:var(--sw)}.kpi.west::after{background:var(--west)}.kpi.chicago::after{background:var(--chicago)}
-  .kpi-label{font-size:0.62rem;font-weight:800;color:var(--muted);letter-spacing:0.07em;text-transform:uppercase;margin-bottom:6px}.kpi-value{font-size:1.9rem;font-weight:900;color:var(--text);letter-spacing:-0.03em;line-height:1}.kpi-sub{font-family:'DM Mono',monospace;font-size:0.58rem;color:var(--muted);margin-top:5px}
-  .week-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin-bottom:1.25rem}.week-cell{background:var(--surface);border:1.5px solid var(--border);border-radius:10px;padding:10px 8px;text-align:center}
-  .wc-label{font-size:0.56rem;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:0.07em;margin-bottom:4px}.wc-val{font-size:1.5rem;font-weight:900;color:var(--bb-cobalt);letter-spacing:-0.02em}.wc-val.best{color:var(--bb-sky)}.wc-val.partial{color:var(--bb-aqua)}.wc-date{font-family:'DM Mono',monospace;font-size:0.48rem;color:var(--muted);margin-top:2px}
-  .grid-3{display:grid;grid-template-columns:2fr 1fr;gap:1rem;margin-bottom:1rem}.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
-  .card{background:var(--surface);border:1.5px solid var(--border);border-radius:16px;padding:1.4rem}.card-title{font-size:0.62rem;font-weight:800;color:var(--muted);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:1rem}.chart-wrap{position:relative;width:100%}
-  .region-tabs{display:flex;gap:6px;margin-bottom:1rem;flex-wrap:wrap}.rtab{font-size:0.68rem;font-weight:800;padding:4px 12px;border-radius:20px;border:1.5px solid var(--border);color:var(--muted);cursor:pointer;transition:all 0.15s}.rtab.active{background:var(--bb-cobalt);border-color:var(--bb-cobalt);color:white}.rtab:hover:not(.active){border-color:var(--bb-sky);color:var(--bb-sky)}
-  .donut-wrap{display:flex;align-items:center;gap:1.25rem}.donut-canvas{position:relative;flex-shrink:0;width:150px;height:150px}.donut-center{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;pointer-events:none}.donut-num{font-size:1.7rem;font-weight:900;color:var(--bb-cobalt);letter-spacing:-0.03em;line-height:1}.donut-sub{font-family:'DM Mono',monospace;font-size:0.52rem;color:var(--muted);margin-top:2px}
-  .donut-legend{display:flex;flex-direction:column;gap:8px;flex:1}.dl-row{display:flex;align-items:center;gap:7px}.dl-dot{width:9px;height:9px;border-radius:2px;flex-shrink:0}.dl-name{font-size:0.76rem;font-weight:700;flex:1;color:var(--text)}.dl-val{font-family:'DM Mono',monospace;font-size:0.68rem;font-weight:500;color:var(--text)}.dl-pct{font-family:'DM Mono',monospace;font-size:0.58rem;color:var(--muted);min-width:36px;text-align:right}
-  .rank-list{display:flex;flex-direction:column}.rank-row{display:flex;align-items:center;gap:9px;padding:7px 0;border-bottom:1px solid var(--border)}.rank-row:last-child{border-bottom:none}.rank-num{font-family:'DM Mono',monospace;font-size:0.58rem;color:var(--muted);width:18px;flex-shrink:0}.rank-name{font-size:0.76rem;font-weight:700;flex:1;color:var(--text)}.rank-region{font-family:'DM Mono',monospace;font-size:0.56rem;color:var(--muted)}.rank-bar-wrap{width:70px;height:5px;background:var(--bb-pale);border-radius:3px;overflow:hidden}.rank-bar{height:100%;border-radius:3px}.rank-val{font-family:'DM Mono',monospace;font-size:0.7rem;font-weight:500;min-width:22px;text-align:right}
-  @media(max-width:1000px){.kpi-grid{grid-template-columns:repeat(3,1fr)}.grid-2,.grid-3{grid-template-columns:1fr}.week-grid{grid-template-columns:repeat(3,1fr)}}
+  :root {
+    --bg:#EEF6FF; --surface:#FFFFFF; --border:#C8DFF7; --border2:#A8C8F0;
+    --bb-cobalt:#0057B8; --bb-sky:#1A8FE3; --bb-aqua:#00B4D8; --bb-light:#90D7F0; --bb-pale:#D6EEFC;
+    --text:#0A2540; --muted:#5A7A9A;
+    --dc:#0057B8; --south:#1A8FE3; --sw:#0096C7; --west:#00B4D8; --chicago:#2EC4E0;
+  }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { background:var(--bg); color:var(--text); font-family:'Nunito',sans-serif; min-height:100vh; }
+  body::before { content:''; position:fixed; top:-300px; left:-100px; right:-100px; height:600px;
+    background:radial-gradient(ellipse at 65% 0%,#90D7F030 0%,transparent 70%),radial-gradient(ellipse at 5% 40%,#0057B80D 0%,transparent 60%);
+    pointer-events:none; z-index:0; }
+  .wrapper { position:relative; z-index:1; max-width:1280px; margin:0 auto; padding:2rem; }
+  header { display:flex; align-items:center; justify-content:space-between; margin-bottom:2rem; padding-bottom:1.25rem; border-bottom:2px solid var(--bb-pale); }
+  .logo-area { display:flex; align-items:center; gap:14px; }
+  .logo-mark { width:46px; height:46px; border-radius:12px; background:var(--bb-cobalt); display:flex; align-items:center; justify-content:center; font-size:1.1rem; font-weight:900; color:white; letter-spacing:-1px; flex-shrink:0; }
+  .header-left h1 { font-size:1.5rem; font-weight:900; color:var(--bb-cobalt); letter-spacing:-0.02em; line-height:1.1; }
+  .header-left p { font-family:'DM Mono',monospace; font-size:0.62rem; color:var(--muted); margin-top:3px; letter-spacing:0.06em; }
+  .live-badge { display:flex; align-items:center; gap:6px; background:#E8F5FF; border:1.5px solid var(--bb-light); border-radius:20px; padding:6px 14px; font-family:'DM Mono',monospace; font-size:0.62rem; color:var(--bb-cobalt); letter-spacing:0.07em; }
+  .live-dot { width:7px; height:7px; border-radius:50%; background:#00C48C; animation:pulse 2s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+  .kpi-grid { display:grid; grid-template-columns:repeat(6,1fr); gap:10px; margin-bottom:1.25rem; }
+  .kpi { background:var(--surface); border-radius:14px; border:1.5px solid var(--border); padding:1rem 1.1rem; position:relative; overflow:hidden; transition:box-shadow 0.2s; }
+  .kpi:hover { box-shadow:0 4px 18px rgba(0,87,184,0.1); border-color:var(--border2); }
+  .kpi::after { content:''; position:absolute; bottom:0; left:0; right:0; height:3px; border-radius:0 0 12px 12px; }
+  .kpi.total::after { background:linear-gradient(90deg,var(--dc),var(--south),var(--sw),var(--west),var(--chicago)); }
+  .kpi.dc::after { background:var(--dc); } .kpi.south::after { background:var(--south); }
+  .kpi.sw::after { background:var(--sw); } .kpi.west::after { background:var(--west); } .kpi.chicago::after { background:var(--chicago); }
+  .kpi-label { font-size:0.62rem; font-weight:800; color:var(--muted); letter-spacing:0.07em; text-transform:uppercase; margin-bottom:6px; }
+  .kpi-value { font-size:1.9rem; font-weight:900; color:var(--text); letter-spacing:-0.03em; line-height:1; }
+  .kpi-sub { font-family:'DM Mono',monospace; font-size:0.58rem; color:var(--muted); margin-top:5px; }
+  .week-grid { display:grid; grid-template-columns:repeat(6,1fr); gap:8px; margin-bottom:1.25rem; }
+  .week-cell { background:var(--surface); border:1.5px solid var(--border); border-radius:10px; padding:10px 8px; text-align:center; }
+  .wc-label { font-size:0.56rem; font-weight:800; color:var(--muted); text-transform:uppercase; letter-spacing:0.07em; margin-bottom:4px; }
+  .wc-val { font-size:1.5rem; font-weight:900; color:var(--bb-cobalt); letter-spacing:-0.02em; }
+  .wc-val.best { color:var(--bb-sky); } .wc-val.partial { color:var(--bb-aqua); }
+  .wc-date { font-family:'DM Mono',monospace; font-size:0.48rem; color:var(--muted); margin-top:2px; }
+  .grid-3 { display:grid; grid-template-columns:2fr 1fr; gap:1rem; margin-bottom:1rem; }
+  .grid-2 { display:grid; grid-template-columns:1fr 1fr; gap:1rem; }
+  .card { background:var(--surface); border:1.5px solid var(--border); border-radius:16px; padding:1.4rem; }
+  .card-title { font-size:0.62rem; font-weight:800; color:var(--muted); letter-spacing:0.08em; text-transform:uppercase; margin-bottom:1rem; }
+  .chart-wrap { position:relative; width:100%; }
+  .region-tabs { display:flex; gap:6px; margin-bottom:1rem; flex-wrap:wrap; }
+  .rtab { font-size:0.68rem; font-weight:800; padding:4px 12px; border-radius:20px; border:1.5px solid var(--border); color:var(--muted); cursor:pointer; transition:all 0.15s; }
+  .rtab.active { background:var(--bb-cobalt); border-color:var(--bb-cobalt); color:white; }
+  .rtab:hover:not(.active) { border-color:var(--bb-sky); color:var(--bb-sky); }
+  .donut-wrap { display:flex; align-items:center; gap:1.25rem; }
+  .donut-canvas { position:relative; flex-shrink:0; width:150px; height:150px; }
+  .donut-center { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); text-align:center; pointer-events:none; }
+  .donut-num { font-size:1.7rem; font-weight:900; color:var(--bb-cobalt); letter-spacing:-0.03em; line-height:1; }
+  .donut-sub { font-family:'DM Mono',monospace; font-size:0.52rem; color:var(--muted); margin-top:2px; }
+  .donut-legend { display:flex; flex-direction:column; gap:8px; flex:1; }
+  .dl-row { display:flex; align-items:center; gap:7px; }
+  .dl-dot { width:9px; height:9px; border-radius:2px; flex-shrink:0; }
+  .dl-name { font-size:0.76rem; font-weight:700; flex:1; color:var(--text); }
+  .dl-val { font-family:'DM Mono',monospace; font-size:0.68rem; font-weight:500; color:var(--text); }
+  .dl-pct { font-family:'DM Mono',monospace; font-size:0.58rem; color:var(--muted); min-width:36px; text-align:right; }
+  .rank-list { display:flex; flex-direction:column; }
+  .rank-row { display:flex; align-items:center; gap:9px; padding:7px 0; border-bottom:1px solid var(--border); }
+  .rank-row:last-child { border-bottom:none; }
+  .rank-num { font-family:'DM Mono',monospace; font-size:0.58rem; color:var(--muted); width:18px; flex-shrink:0; }
+  .rank-name { font-size:0.76rem; font-weight:700; flex:1; color:var(--text); }
+  .rank-region { font-family:'DM Mono',monospace; font-size:0.56rem; color:var(--muted); }
+  .rank-bar-wrap { width:70px; height:5px; background:var(--bb-pale); border-radius:3px; overflow:hidden; }
+  .rank-bar { height:100%; border-radius:3px; }
+  .rank-val { font-family:'DM Mono',monospace; font-size:0.7rem; font-weight:500; min-width:22px; text-align:right; }
+  @media (max-width:1000px) { .kpi-grid { grid-template-columns:repeat(3,1fr); } .grid-2,.grid-3 { grid-template-columns:1fr; } .week-grid { grid-template-columns:repeat(3,1fr); } }
 </style>
 </head>
 <body>
 <div class="wrapper">
-<header>
-  <div class="logo-area"><div class="logo-mark">BB</div><div class="header-left"><h1>Clinic Sales Dashboard</h1><p>BIG BLUE SWIM SCHOOL &nbsp; 2026 YTD &nbsp; WEEKS 1-5 &nbsp; 22 LOCATIONS 6 REGIONS</p></div></div>
-  <div class="live-badge"><div class="live-dot"></div>Week 5 in progress</div>
-</header>
-<div class="kpi-grid" id="kpiGrid"></div>
-<div class="week-grid" id="weekGrid"></div>
-<div class="grid-3">
-  <div class="card"><div class="card-title">Weekly clinics by region with running total</div><div class="chart-wrap" style="height:230px;"><canvas id="weeklyChart"></canvas></div></div>
-  <div class="card"><div class="card-title">Share by region</div><div class="donut-wrap"><div class="donut-canvas"><canvas id="donutChart" width="150" height="150"></canvas><div class="donut-center"><div class="donut-num" id="dNum">486</div><div class="donut-sub">total</div></div></div><div class="donut-legend" id="donutLegend"></div></div></div>
-</div>
-<div class="grid-2">
-  <div class="card"><div class="card-title">Schools by region</div><div class="region-tabs" id="regionTabs"></div><div class="chart-wrap" style="height:200px;"><canvas id="schoolChart"></canvas></div></div>
-  <div class="card"><div class="card-title">Top 10 schools YTD</div><div class="rank-list" id="rankList"></div></div>
-</div>
+  <header>
+    <div class="logo-area">
+      <div class="logo-mark">BB</div>
+      <div class="header-left">
+        <h1>Clinic Sales Dashboard</h1>
+        <p>BIG BLUE SWIM SCHOOL &nbsp;·&nbsp; 2026 YTD &nbsp;·&nbsp; WEEKS 1–5 &nbsp;·&nbsp; 22 LOCATIONS · 6 REGIONS</p>
+      </div>
+    </div>
+    <div class="live-badge"><div class="live-dot"></div>Week 5 in progress</div>
+  </header>
+  <div class="kpi-grid" id="kpiGrid"></div>
+  <div class="week-grid" id="weekGrid"></div>
+  <div class="grid-3">
+    <div class="card">
+      <div class="card-title">Weekly clinics by region — with running total</div>
+      <div class="chart-wrap" style="height:230px;"><canvas id="weeklyChart"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Share by region</div>
+      <div class="donut-wrap">
+        <div class="donut-canvas">
+          <canvas id="donutChart" width="150" height="150"></canvas>
+          <div class="donut-center"><div class="donut-num" id="dNum">486</div><div class="donut-sub">total</div></div>
+        </div>
+        <div class="donut-legend" id="donutLegend"></div>
+      </div>
+    </div>
+  </div>
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title">Schools by region</div>
+      <div class="region-tabs" id="regionTabs"></div>
+      <div class="chart-wrap" style="height:200px;"><canvas id="schoolChart"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Top 10 schools — YTD</div>
+      <div class="rank-list" id="rankList"></div>
+    </div>
+  </div>
 </div>
 <script>
-const locations=[{name:'Springfield',region:'DC Metro',wk:[19,6,7,4,3,1]},{name:'Falls Church',region:'DC Metro',wk:[2,5,8,4,1,4]},{name:'Fairfax',region:'DC Metro',wk:[2,9,0,1,5,4]},{name:'Chantilly',region:'DC Metro',wk:[1,8,2,2,0,7]},{name:'Dulles',region:'DC Metro',wk:[3,4,0,3,5,1]},{name:'Germantown',region:'DC Metro',wk:[0,9,0,5,0,2]},{name:'Plano',region:'South',wk:[8,11,8,4,8,0]},{name:'Allen',region:'South',wk:[1,12,2,6,5,2]},{name:'Johns Creek',region:'South',wk:[2,10,1,6,5,0]},{name:'North Druid Hills',region:'South',wk:[1,7,7,6,0,0]},{name:'Frisco',region:'South',wk:[1,1,8,4,2,1]},{name:'Gilbert',region:'Southwest',wk:[2,16,4,10,10,1]},{name:'Torrance',region:'West',wk:[3,12,7,2,3,5]},{name:'Tustin',region:'West',wk:[7,3,0,4,5,2]},{name:'Point Loma',region:'West',wk:[2,3,1,5,4,3]},{name:'Huntington Beach',region:'West',wk:[1,1,6,0,0,3]},{name:'Lakewood',region:'West',wk:[2,0,2,4,4,0]},{name:'Buffalo Grove',region:'Chicago',wk:[4,8,3,6,4,5]},{name:'Chicago N. Center',region:'Chicago',wk:[0,4,5,0,4,4]},{name:'Wilmette',region:'Chicago',wk:[5,8,2,0,0,1]},{name:'Hoffman Estates',region:'Chicago',wk:[1,6,1,1,1,0]},{name:'Niles',region:'Chicago',wk:[3,2,2,0,1,2]}];
-const regions=['DC Metro','South','Southwest','West','Chicago'];
-const rColors={'DC Metro':'#0057B8','South':'#1A8FE3','Southwest':'#0096C7','West':'#00B4D8','Chicago':'#2EC4E0'};
-const rBg={'DC Metro':'#0057B840','South':'#1A8FE340','Southwest':'#0096C740','West':'#00B4D840','Chicago':'#2EC4E040'};
-const weekDates=['2/9-2/14','2/15-2/21','2/22-2/28','3/1-3/7','3/8-3/14','3/15-18*'];
-const tot=l=>l.wk.reduce((a,b)=>a+b,0);
-const grand=locations.reduce((s,l)=>s+tot(l),0);
-const wkTot=weekDates.map((_,i)=>locations.reduce((s,l)=>s+l.wk[i],0));
-const run=wkTot.map((v,i)=>wkTot.slice(0,i+1).reduce((a,b)=>a+b,0));
-const bestW=Math.max(...wkTot);
-const clsMap={'dc-metro':'dc','south':'south','southwest':'sw','west':'west','chicago':'chicago','total':'total'};
-document.getElementById('kpiGrid').innerHTML=[{label:'Total YTD',value:grand,sub:'22 schools 6 regions',cls:'total'},...regions.map(r=>{const rv=locations.filter(l=>l.region===r).reduce((s,l)=>s+tot(l),0);return{label:r,value:rv,sub:((rv/grand)*100).toFixed(1)+'% of network',cls:r.toLowerCase().replace(/\s+/g,'-')};})].map(k=>{const c=clsMap[k.cls]||k.cls;return '<div class="kpi '+c+'"><div class="kpi-label">'+k.label+'</div><div class="kpi-value">'+k.value+'</div><div class="kpi-sub">'+k.sub+'</div></div>';}).join('');
-document.getElementById('weekGrid').innerHTML=wkTot.map((v,i)=>{const cls=v===bestW?'best':i===5?'partial':'';return '<div class="week-cell"><div class="wc-label">Week '+(i<4?i+1:i===4?'5a':'5b')+'</div><div class="wc-val '+cls+'">'+v+'</div><div class="wc-date">'+weekDates[i]+'</div></div>';}).join('');
+const locations = [
+  { name:'Springfield',       region:'DC Metro',  wk:[19,6,7,4,3,1] },
+  { name:'Falls Church',      region:'DC Metro',  wk:[2,5,8,4,1,4] },
+  { name:'Fairfax',           region:'DC Metro',  wk:[2,9,0,1,5,4] },
+  { name:'Chantilly',         region:'DC Metro',  wk:[1,8,2,2,0,7] },
+  { name:'Dulles',            region:'DC Metro',  wk:[3,4,0,3,5,1] },
+  { name:'Germantown',        region:'DC Metro',  wk:[0,9,0,5,0,2] },
+  { name:'Plano',             region:'South',     wk:[8,11,8,4,8,0] },
+  { name:'Allen',             region:'South',     wk:[1,12,2,6,5,2] },
+  { name:'Johns Creek',       region:'South',     wk:[2,10,1,6,5,0] },
+  { name:'North Druid Hills', region:'South',     wk:[1,7,7,6,0,0] },
+  { name:'Frisco',            region:'South',     wk:[1,1,8,4,2,1] },
+  { name:'Gilbert',           region:'Southwest', wk:[2,16,4,10,10,1] },
+  { name:'Torrance',          region:'West',      wk:[3,12,7,2,3,5] },
+  { name:'Tustin',            region:'West',      wk:[7,3,0,4,5,2] },
+  { name:'Point Loma',        region:'West',      wk:[2,3,1,5,4,3] },
+  { name:'Huntington Beach',  region:'West',      wk:[1,1,6,0,0,3] },
+  { name:'Lakewood',          region:'West',      wk:[2,0,2,4,4,0] },
+  { name:'Buffalo Grove',     region:'Chicago',   wk:[4,8,3,6,4,5] },
+  { name:'Chicago N. Center', region:'Chicago',   wk:[0,4,5,0,4,4] },
+  { name:'Wilmette',          region:'Chicago',   wk:[5,8,2,0,0,1] },
+  { name:'Hoffman Estates',   region:'Chicago',   wk:[1,6,1,1,1,0] },
+  { name:'Niles',             region:'Chicago',   wk:[3,2,2,0,1,2] },
+];
+const regions = ['DC Metro','South','Southwest','West','Chicago'];
+const rColors = {'DC Metro':'#0057B8','South':'#1A8FE3','Southwest':'#0096C7','West':'#00B4D8','Chicago':'#2EC4E0'};
+const rBg = {'DC Metro':'#0057B840','South':'#1A8FE340','Southwest':'#0096C740','West':'#00B4D840','Chicago':'#2EC4E040'};
+const weekDates = ['2/9-2/14','2/15-2/21','2/22-2/28','3/1-3/7','3/8-3/14','3/15-18*'];
+const tot = l => l.wk.reduce((a,b)=>a+b,0);
+const grand = locations.reduce((s,l)=>s+tot(l),0);
+const wkTot = weekDates.map((_,i)=>locations.reduce((s,l)=>s+l.wk[i],0));
+const run = wkTot.map((v,i)=>wkTot.slice(0,i+1).reduce((a,b)=>a+b,0));
+const bestW = Math.max(...wkTot);
+const clsMap = {'dc-metro':'dc','south':'south','southwest':'sw','west':'west','chicago':'chicago','total':'total'};
+document.getElementById('kpiGrid').innerHTML = [
+  {label:'Total YTD',value:grand,sub:'22 schools · 6 regions',cls:'total'},
+  ...regions.map(r=>{const rv=locations.filter(l=>l.region===r).reduce((s,l)=>s+tot(l),0);return{label:r,value:rv,sub:((rv/grand)*100).toFixed(1)+'% of network',cls:r.toLowerCase().replace(/\s+/g,'-')};})
+].map(k=>{const c=clsMap[k.cls]||k.cls;return '<div class="kpi '+c+'"><div class="kpi-label">'+k.label+'</div><div class="kpi-value">'+k.value+'</div><div class="kpi-sub">'+k.sub+'</div></div>';}).join('');
+document.getElementById('weekGrid').innerHTML = wkTot.map((v,i)=>{
+  const cls=v===bestW?'best':i===5?'partial':'';
+  return '<div class="week-cell"><div class="wc-label">Week '+(i<4?i+1:i===4?'5a':'5b')+'</div><div class="wc-val '+cls+'">'+v+'</div><div class="wc-date">'+weekDates[i]+'</div></div>';
+}).join('');
 new Chart(document.getElementById('weeklyChart'),{data:{labels:weekDates,datasets:[...regions.map(r=>({type:'bar',label:r,data:weekDates.map((_,i)=>locations.filter(l=>l.region===r).reduce((s,l)=>s+l.wk[i],0)),backgroundColor:rBg[r],borderColor:rColors[r],borderWidth:1.5,borderRadius:3,stack:'s'})),{type:'line',label:'Running total',data:run,borderColor:'#0057B8',borderWidth:2,borderDash:[5,3],pointBackgroundColor:'#0057B8',pointRadius:4,tension:0.3,fill:false,yAxisID:'y2'}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{stacked:true,ticks:{color:'#5A7A9A',font:{size:10}},grid:{display:false},border:{display:false}},y:{stacked:true,ticks:{color:'#5A7A9A',font:{size:10}},grid:{color:'#D6EEFC'},border:{display:false}},y2:{position:'right',ticks:{color:'#0057B8',font:{size:10}},grid:{display:false},border:{display:false}}}}});
-const rTotals=regions.map(r=>locations.filter(l=>l.region===r).reduce((s,l)=>s+tot(l),0));
+const rTotals = regions.map(r=>locations.filter(l=>l.region===r).reduce((s,l)=>s+tot(l),0));
 new Chart(document.getElementById('donutChart'),{type:'doughnut',data:{labels:regions,datasets:[{data:rTotals,backgroundColor:regions.map(r=>rColors[r]),borderColor:'#FFFFFF',borderWidth:3,hoverOffset:5}]},options:{responsive:false,cutout:'65%',plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>' '+ctx.parsed+' ('+((ctx.parsed/grand)*100).toFixed(1)+'%)'}}},onHover:(evt,els)=>{document.getElementById('dNum').textContent=els.length?rTotals[els[0].index]:grand;}}});
 document.getElementById('donutLegend').innerHTML=regions.map((r,i)=>'<div class="dl-row"><span class="dl-dot" style="background:'+rColors[r]+'"></span><span class="dl-name">'+r+'</span><span class="dl-val">'+rTotals[i]+'</span><span class="dl-pct">'+((rTotals[i]/grand)*100).toFixed(1)+'%</span></div>').join('');
-let schoolChart,activeR='DC Metro';
+let schoolChart, activeR='DC Metro';
 document.getElementById('regionTabs').innerHTML=regions.map(r=>'<div class="rtab '+(r===activeR?'active':'')+'" onclick="setR(''+r+'',this)">'+r+'</div>').join('');
 function setR(r,el){activeR=r;document.querySelectorAll('.rtab').forEach(t=>t.classList.remove('active'));el.classList.add('active');buildSchool();}
 function buildSchool(){if(schoolChart)schoolChart.destroy();const s=locations.filter(l=>l.region===activeR).sort((a,b)=>tot(b)-tot(a));const c=rColors[activeR];schoolChart=new Chart(document.getElementById('schoolChart'),{type:'bar',data:{labels:s.map(x=>x.name),datasets:[{data:s.map(x=>tot(x)),backgroundColor:c+'55',borderColor:c,borderWidth:2,borderRadius:5}]},options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{color:'#5A7A9A',font:{size:10}},grid:{color:'#D6EEFC'},border:{display:false}},y:{ticks:{color:'#0A2540',font:{size:11,weight:'700'}},grid:{display:false},border:{display:false}}}}});}
 buildSchool();
-const sorted=[...locations].sort((a,b)=>tot(b)-tot(a));const maxT=tot(sorted[0]);
+const sorted=[...locations].sort((a,b)=>tot(b)-tot(a));
+const maxT=tot(sorted[0]);
 document.getElementById('rankList').innerHTML=sorted.slice(0,10).map((l,i)=>{const t=tot(l);return '<div class="rank-row"><span class="rank-num">'+String(i+1).padStart(2,'0')+'</span><span class="rank-name">'+l.name+'</span><span class="rank-region">'+l.region+'</span><div class="rank-bar-wrap"><div class="rank-bar" style="width:'+Math.round((t/maxT)*100)+'%;background:'+rColors[l.region]+'"></div></div><span class="rank-val" style="color:'+rColors[l.region]+'">'+t+'</span></div>';}).join('');
 </script>
 </body>
