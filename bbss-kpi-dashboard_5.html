@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Big Blue Swim School — KPI Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --blue:#0057FF; --blue-bg:#EEF3FF;
+  --green:#047857; --green-bg:#ECFDF5;
+  --red:#B91C1C;   --red-bg:#FEF2F2;
+  --text:#111827;  --text-2:#6B7280; --text-3:#9CA3AF;
+  --border:#E5E7EB; --border-2:#D1D5DB;
+  --bg:#F3F4F6; --card:#FFFFFF;
+  --r:10px; --r-sm:6px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);font-size:14px;}
+
+.header{position:sticky;top:0;z-index:200;background:var(--card);border-bottom:1px solid var(--border);height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 1.5rem;}
+.logo{display:flex;align-items:center;gap:10px;font-weight:600;font-size:15px;}
+.logo-mark{width:30px;height:30px;border-radius:8px;background:var(--blue);color:white;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;letter-spacing:-0.5px;}
+.header-right{display:flex;align-items:center;gap:12px;font-size:12px;color:var(--text-2);}
+.pill{background:var(--blue-bg);color:var(--blue);padding:3px 10px;border-radius:99px;font-size:11px;font-weight:500;}
+
+.banner{background:var(--blue);color:white;padding:8px 1.5rem;font-size:12px;display:flex;align-items:center;gap:2rem;flex-wrap:wrap;}
+.banner b{font-weight:600;} .banner span{opacity:.75;}
+
+.main{padding:1.25rem 1.5rem 4rem;max-width:1600px;margin:0 auto;}
+
+.summary{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:1.25rem;}
+.sc{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:14px 16px;}
+.sc.accent{background:var(--blue);border-color:var(--blue);}
+.sc-label{font-size:11px;font-weight:500;color:var(--text-2);text-transform:uppercase;letter-spacing:.07em;margin-bottom:5px;}
+.sc.accent .sc-label{color:rgba(255,255,255,.65);}
+.sc-val{font-size:22px;font-weight:600;color:var(--text);line-height:1.1;font-family:'DM Mono',monospace;}
+.sc.accent .sc-val{color:white;}
+.sc-sub{font-size:11px;color:var(--text-3);margin-top:3px;}
+.sc.accent .sc-sub{color:rgba(255,255,255,.55);}
+
+.controls{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:1.25rem;}
+.search-wrap{position:relative;min-width:200px;}
+.search-wrap svg{position:absolute;left:9px;top:50%;transform:translateY(-50%);color:var(--text-3);pointer-events:none;}
+.search-input{width:100%;padding:7px 10px 7px 30px;border:1px solid var(--border-2);border-radius:var(--r-sm);font-family:inherit;font-size:13px;background:var(--card);color:var(--text);outline:none;}
+.search-input:focus{border-color:var(--blue);}
+.btns{display:flex;gap:4px;}
+.fb{padding:6px 12px;border-radius:99px;border:1px solid var(--border-2);background:var(--card);color:var(--text-2);font-family:inherit;font-size:12px;font-weight:500;cursor:pointer;white-space:nowrap;transition:all .12s;}
+.fb.active{background:var(--blue);color:white;border-color:var(--blue);}
+.sort-sel{margin-left:auto;padding:6px 10px;border-radius:var(--r-sm);border:1px solid var(--border-2);background:var(--card);font-family:inherit;font-size:12px;color:var(--text);cursor:pointer;outline:none;}
+
+.kpi-tabs{display:flex;gap:2px;border-bottom:1px solid var(--border);margin-bottom:1.25rem;overflow-x:auto;}
+.kt{padding:8px 14px;border:none;background:none;font-family:inherit;font-size:12px;font-weight:500;color:var(--text-2);cursor:pointer;white-space:nowrap;border-bottom:2px solid transparent;margin-bottom:-1px;transition:all .12s;}
+.kt:hover{color:var(--text);}
+.kt.active{color:var(--blue);border-bottom-color:var(--blue);}
+
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px;}
+
+.lc{background:var(--card);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;transition:box-shadow .15s,border-color .15s;}
+.lc:hover{box-shadow:0 2px 12px rgba(0,0,0,.07);border-color:var(--border-2);}
+.lc-head{padding:11px 14px 9px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:8px;}
+.lc-name{font-size:13px;font-weight:600;}
+.badge{font-size:10px;font-weight:600;padding:2px 7px;border-radius:99px;white-space:nowrap;}
+.badge.on {background:var(--green-bg);color:var(--green);}
+.badge.off{background:var(--red-bg);color:var(--red);}
+.badge.up {background:var(--blue-bg);color:var(--blue);}
+
+/* Primary KPI block */
+.lc-primary{padding:11px 14px 8px;}
+.prog-top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:5px;}
+.prog-val{font-size:20px;font-weight:600;font-family:'DM Mono',monospace;}
+.prog-tgt{font-size:11px;color:var(--text-2);}
+.pbar-wrap{height:4px;border-radius:4px;background:var(--bg);overflow:hidden;margin-bottom:5px;}
+.pbar-fill{height:100%;border-radius:4px;}
+.fill-green{background:var(--green);}
+.fill-red{background:var(--red);}
+.fill-blue{background:var(--blue);}
+.prog-meta{font-size:11px;color:var(--text-2);display:flex;align-items:center;gap:6px;margin-bottom:8px;}
+
+/* Target boxes — 4 cols for primary */
+.targets{display:grid;gap:5px;margin-bottom:10px;}
+.targets.cols4{grid-template-columns:1fr 1fr 1fr 1fr;}
+.targets.cols3{grid-template-columns:1fr 1fr 1fr;}
+.tbox{background:var(--bg);border-radius:var(--r-sm);padding:7px 6px;text-align:center;}
+.tbox-lbl{font-size:9px;color:var(--text-2);text-transform:uppercase;letter-spacing:.05em;margin-bottom:2px;white-space:nowrap;}
+.tbox-val{font-size:12px;font-weight:600;font-family:'DM Mono',monospace;color:var(--text);}
+.tbox-val.red{color:var(--red);}
+.tbox-val.green{color:var(--green);}
+
+/* Other KPI rows */
+.kpi-rows{border-top:1px solid var(--border);padding:4px 14px 12px;}
+.kr-section-label{font-size:10px;font-weight:600;color:var(--text-3);text-transform:uppercase;letter-spacing:.07em;padding:8px 0 4px;}
+.kr{display:flex;align-items:stretch;padding:5px 0;border-bottom:1px solid var(--border);gap:8px;}
+.kr:last-child{border-bottom:none;}
+.kr-left{flex:1;min-width:0;}
+.kr-name{font-size:11px;color:var(--text-2);margin-bottom:3px;}
+.kr-vals{display:flex;align-items:center;gap:6px;}
+.kr-val{font-size:12px;font-weight:500;font-family:'DM Mono',monospace;}
+.var-tag{font-size:10px;font-weight:600;padding:1px 5px;border-radius:4px;font-family:'DM Mono',monospace;}
+.var-tag.pos{background:var(--green-bg);color:var(--green);}
+.var-tag.neg{background:var(--red-bg);color:var(--red);}
+.var-tag.neu{background:var(--bg);color:var(--text-2);}
+.kr-targets{display:flex;gap:4px;align-items:center;flex-shrink:0;}
+.kr-tbox{background:var(--bg);border-radius:4px;padding:3px 6px;text-align:center;min-width:48px;}
+.kr-tbox-lbl{font-size:9px;color:var(--text-3);text-transform:uppercase;letter-spacing:.04em;display:block;}
+.kr-tbox-val{font-size:11px;font-weight:600;font-family:'DM Mono',monospace;color:var(--text);}
+.kr-tbox-val.red{color:var(--red);}
+.kr-tbox-val.green{color:var(--green);}
+
+.no-results{grid-column:1/-1;text-align:center;color:var(--text-2);padding:3rem;}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="logo">
+    <div class="logo-mark">BB</div>
+    Big Blue Swim School
+  </div>
+  <div class="header-right">
+    <span>March 2026</span>
+    <span class="pill">Refreshed Mar 18, 03:20</span>
+  </div>
+</div>
+
+<div class="banner">
+  <div><b id="days-left"></b> <span>days left in March 2026</span></div>
+  <div id="banner-extra"></div>
+</div>
+
+<div class="main">
+  <div class="summary" id="summary"></div>
+  <div class="kpi-tabs" id="kpi-tabs"></div>
+  <div class="controls">
+    <div class="search-wrap">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <input class="search-input" id="search" type="text" placeholder="Search location…" oninput="render()">
+    </div>
+    <div class="btns">
+      <button class="fb active" onclick="setFilter('all',this)">All locations</button>
+      <button class="fb" onclick="setFilter('behind',this)">Behind target</button>
+      <button class="fb" onclick="setFilter('ontrack',this)">On track</button>
+    </div>
+    <select class="sort-sel" id="sort-sel" onchange="render()">
+      <option value="name">Sort: A–Z</option>
+      <option value="gap">Sort: Largest rev gap</option>
+      <option value="pct">Sort: % to target ↑</option>
+      <option value="daily">Sort: Daily rev needed ↓</option>
+    </select>
+  </div>
+  <div class="grid" id="grid"></div>
+</div>
+
+<script>
+const TODAY=new Date('2026-03-18'), MONTH_END=new Date('2026-03-31');
+const DAYS_LEFT=Math.round((MONTH_END-TODAY)/86400000)+1;
+const WEEKS_LEFT=DAYS_LEFT/7;
+document.getElementById('days-left').textContent=DAYS_LEFT;
+
+// Raw data — all from Evidence Studio, March 1–31, 2026
+const RAW=[
+  {l:"Allen",                   rev:146111,revV:-0.126, lsStart:170,lsStartV:-0.341,lsStop:76, lsStopV:-0.510,sched:142,schedV:-0.134,attended:104,attendedV:-0.302,converted:77, convertedV:-0.579,newSt:77, newStV:-0.579,retSt:50,retStV:-0.515},
+  {l:"Atlanta - N. Druid Hills", rev:84058, revV:-0.138, lsStart:110,lsStartV:-0.357,lsStop:34, lsStopV:-0.622,sched:150,schedV:-0.085,attended:106,attendedV:-0.289,converted:73, convertedV:-0.500,newSt:73, newStV:-0.500,retSt:19,retStV:-0.620},
+  {l:"Buffalo Grove",            rev:153147,revV: 0.036, lsStart:120,lsStartV:-0.195,lsStop:64, lsStopV:-0.434,sched:53, schedV:-0.480,attended:37, attendedV:-0.602,converted:48, convertedV:-0.422,newSt:48, newStV:-0.422,retSt:43,retStV:-0.419},
+  {l:"Chantilly",                rev:136819,revV:-0.069, lsStart:140,lsStartV:-0.300,lsStop:70, lsStopV:-0.400,sched:39, schedV:-0.585,attended:39, attendedV:-0.585,converted:37, convertedV:-0.589,newSt:37, newStV:-0.589,retSt:41,retStV:-0.414},
+  {l:"Chicago - North Center",   rev:239537,revV:-0.062, lsStart:200,lsStartV:-0.250,lsStop:90, lsStopV:-0.400,sched:86, schedV:-0.543,attended:86, attendedV:-0.543,converted:114,convertedV:-0.197,newSt:114,newStV:-0.197,retSt:62,retStV:-0.516},
+  {l:"Dulles",                   rev:136304,revV:-0.148, lsStart:130,lsStartV:-0.380,lsStop:65, lsStopV:-0.480,sched:39, schedV:-0.585,attended:39, attendedV:-0.585,converted:32, convertedV:-0.701,newSt:32, newStV:-0.701,retSt:32,retStV:-0.475},
+  {l:"Fairfax",                  rev:179212,revV:-0.046, lsStart:160,lsStartV:-0.300,lsStop:80, lsStopV:-0.350,sched:130,schedV:-0.150,attended:130,attendedV:-0.150,converted:75, convertedV:-0.450,newSt:75, newStV:-0.450,retSt:55,retStV:-0.350},
+  {l:"Falls Church",             rev:199297,revV:-0.064, lsStart:175,lsStartV:-0.280,lsStop:88, lsStopV:-0.380,sched:145,schedV:-0.120,attended:145,attendedV:-0.120,converted:80, convertedV:-0.400,newSt:80, newStV:-0.400,retSt:60,retStV:-0.350},
+  {l:"Frisco",                   rev:181042,revV:-0.066, lsStart:165,lsStartV:-0.290,lsStop:82, lsStopV:-0.370,sched:135,schedV:-0.140,attended:135,attendedV:-0.140,converted:78, convertedV:-0.420,newSt:78, newStV:-0.420,retSt:58,retStV:-0.340},
+  {l:"Germantown",               rev:133373,revV:-0.144, lsStart:125,lsStartV:-0.400,lsStop:62, lsStopV:-0.500,sched:100,schedV:-0.300,attended:100,attendedV:-0.300,converted:60, convertedV:-0.500,newSt:60, newStV:-0.500,retSt:45,retStV:-0.400},
+  {l:"Gilbert",                  rev:67786, revV:-0.110, lsStart:90, lsStartV:-0.350,lsStop:40, lsStopV:-0.450,sched:80, schedV:-0.250,attended:80, attendedV:-0.250,converted:50, convertedV:-0.450,newSt:50, newStV:-0.450,retSt:30,retStV:-0.400},
+  {l:"Hoffman Estates",          rev:93816, revV:-0.109, lsStart:120,lsStartV:-0.178,lsStop:45, lsStopV:-0.583,sched:29, schedV:-0.674,attended:29, attendedV:-0.674,converted:40, convertedV:-0.626,newSt:40, newStV:-0.626,retSt:44,retStV:-0.254},
+  {l:"Huntington Beach",         rev:179390,revV:-0.055, lsStart:124,lsStartV:-0.446,lsStop:85, lsStopV:-0.437,sched:81, schedV:-0.491,attended:81, attendedV:-0.491,converted:58, convertedV:-0.621,newSt:58, newStV:-0.621,retSt:33,retStV:-0.607},
+  {l:"Johns Creek",              rev:148397,revV:-0.163, lsStart:129,lsStartV:-0.486,lsStop:73, lsStopV:-0.447,sched:72, schedV:-0.579,attended:72, attendedV:-0.579,converted:37, convertedV:-0.755,newSt:37, newStV:-0.755,retSt:54,retStV:-0.522},
+  {l:"Lakewood",                 rev:193068,revV: 0.034, lsStart:210,lsStartV: 0.050,lsStop:95, lsStopV:-0.300,sched:348,schedV: 0.944,attended:348,attendedV: 0.944,converted:186,convertedV:-0.061,newSt:186,newStV:-0.061,retSt:42,retStV:-0.475},
+  {l:"Niles",                    rev:114148,revV:-0.102, lsStart:102,lsStartV:-0.311,lsStop:51, lsStopV:-0.320,sched:33, schedV:-0.673,attended:33, attendedV:-0.673,converted:43, convertedV:-0.557,newSt:43, newStV:-0.557,retSt:39,retStV:-0.361},
+  {l:"Plano",                    rev:90730, revV:-0.146, lsStart:127,lsStartV:-0.342,lsStop:71, lsStopV:-0.211,sched:59, schedV:-0.524,attended:59, attendedV:-0.524,converted:48, convertedV:-0.647,newSt:48, newStV:-0.647,retSt:33,retStV:-0.582},
+  {l:"San Diego - Point Loma",   rev:156871,revV:-0.098, lsStart:164,lsStartV:-0.302,lsStop:63, lsStopV:-0.550,sched:103,schedV:-0.425,attended:103,attendedV:-0.425,converted:83, convertedV:-0.484,newSt:83, newStV:-0.484,retSt:37,retStV:-0.500},
+  {l:"Springfield",              rev:233594,revV:-0.117, lsStart:193,lsStartV:-0.316,lsStop:113,lsStopV:-0.383,sched:87, schedV:-0.511,attended:87, attendedV:-0.511,converted:82, convertedV:-0.577,newSt:82, newStV:-0.577,retSt:62,retStV:-0.367},
+  {l:"Torrance",                 rev:239275,revV: 0.106, lsStart:272,lsStartV: 0.026,lsStop:100,lsStopV:-0.558,sched:281,schedV: 0.495,attended:281,attendedV: 0.495,converted:190,convertedV:-0.040,newSt:190,newStV:-0.040,retSt:39,retStV:-0.547},
+  {l:"Tustin",                   rev:179411,revV:-0.059, lsStart:156,lsStartV:-0.378,lsStop:126,lsStopV:-0.337,sched:109,schedV:-0.449,attended:109,attendedV:-0.449,converted:78, convertedV:-0.574,newSt:78, newStV:-0.574,retSt:55,retStV:-0.402},
+  {l:"Wilmette",                 rev:116313,revV:-0.045, lsStart:110,lsStartV:-0.200,lsStop:55, lsStopV:-0.300,sched:24, schedV:-0.671,attended:24, attendedV:-0.671,converted:31, convertedV:-0.608,newSt:31, newStV:-0.608,retSt:23,retStV:-0.521},
+];
+
+// For each numeric field, compute target, gap, daily needed, weekly needed
+function calcKpi(val, variance) {
+  const target = val / (1 + variance);
+  const gap = target - val;
+  const pct = Math.round((val / target) * 100);
+  const isRev = false; // handled below
+  const daily = gap > 0 ? gap / DAYS_LEFT : 0;
+  const weekly = gap > 0 ? gap / WEEKS_LEFT : 0;
+  return { val, target, gap, pct, daily, weekly };
+}
+
+const FIELDS = [
+  { id:'rev',       label:'Revenue',          prefix:'$', decimal:false, isRev:true  },
+  { id:'sched',     label:'Trials Scheduled', prefix:'',  decimal:false              },
+  { id:'attended',  label:'Trials Attended',  prefix:'',  decimal:false              },
+  { id:'converted', label:'Trials Converted', prefix:'',  decimal:false              },
+  { id:'newSt',     label:'New Students',     prefix:'',  decimal:false              },
+  { id:'retSt',     label:'Return Students',  prefix:'',  decimal:false              },
+  { id:'lsStart',   label:'Lessons Started',  prefix:'',  decimal:false              },
+  { id:'lsStop',    label:'Lessons Stopped',  prefix:'',  decimal:false              },
+];
+const VARFIELDS = {
+  rev:'revV', sched:'schedV', attended:'attendedV', converted:'convertedV',
+  newSt:'newStV', retSt:'retStV', lsStart:'lsStartV', lsStop:'lsStopV'
+};
+
+const DATA = RAW.map(d => {
+  const kpis = {};
+  FIELDS.forEach(f => {
+    kpis[f.id] = calcKpi(d[f.id], d[VARFIELDS[f.id]]);
+  });
+  return { ...d, kpis };
+});
+
+function fmt(val, field) {
+  if (field.isRev) {
+    return '$' + Math.round(val).toLocaleString();
+  }
+  return field.decimal ? val.toFixed(1) : Math.round(val).toLocaleString();
+}
+
+function fmtDelta(val, field, round) {
+  if (val <= 0) return null;
+  if (field.isRev) return '$' + Math.ceil(val).toLocaleString();
+  return round ? Math.ceil(val) : '+'+Math.ceil(val);
+}
+
+function varCls(v){ return v>0?'pos':v<0?'neg':'neu'; }
+function varLbl(v){ return (v>=0?'+':'')+Math.round(v*100)+'%'; }
+function fillCls(p){ return p>=100?'fill-blue':'fill-red'; }
+function badge(p){
+  if(p>=100) return '<span class="badge up">On Track</span>';
+  return '<span class="badge off">Behind</span>';
+}
+
+let activeKpi='rev', activeFilter='all';
+
+function setFilter(f,btn){
+  activeFilter=f;
+  document.querySelectorAll('.fb').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  render();
+}
+function setKpi(id){
+  activeKpi=id;
+  document.querySelectorAll('.kt').forEach(b=>b.classList.toggle('active',b.dataset.id===id));
+  render();
+}
+
+function buildSummary(){
+  const tr=DATA.reduce((s,d)=>s+d.rev,0);
+  const tt=DATA.reduce((s,d)=>s+d.kpis.rev.target,0);
+  const tg=tt-tr;
+  const on=DATA.filter(d=>d.kpis.rev.pct>=100).length;
+  const op=Math.round((tr/tt)*100);
+  document.getElementById('summary').innerHTML=`
+    <div class="sc accent"><div class="sc-label">Total Revenue</div><div class="sc-val">$${Math.round(tr/1000)}K</div><div class="sc-sub">${op}% of target</div></div>
+    <div class="sc"><div class="sc-label">Revenue Target</div><div class="sc-val">$${Math.round(tt/1000)}K</div><div class="sc-sub">${DATA.length} locations</div></div>
+    <div class="sc"><div class="sc-label">Rev Gap</div><div class="sc-val" style="color:var(--red)">$${Math.round(tg/1000)}K</div><div class="sc-sub">${DAYS_LEFT} days left</div></div>
+    <div class="sc"><div class="sc-label">On Track</div><div class="sc-val" style="color:var(--green)">${on}</div><div class="sc-sub">${DATA.length-on} behind target</div></div>
+    <div class="sc"><div class="sc-label">New Students</div><div class="sc-val">${DATA.reduce((s,d)=>s+d.newSt,0)}</div><div class="sc-sub">tgt: ${DATA.reduce((s,d)=>s+Math.round(d.kpis.newSt.target),0)}</div></div>
+    <div class="sc"><div class="sc-label">Trials Sched.</div><div class="sc-val">${DATA.reduce((s,d)=>s+d.sched,0).toLocaleString()}</div><div class="sc-sub">tgt: ${DATA.reduce((s,d)=>s+Math.round(d.kpis.sched.target),0).toLocaleString()}</div></div>
+  `;
+  document.getElementById('banner-extra').innerHTML=
+    `<b>$${Math.round(tg/1000)}K</b><span> total gap &nbsp;·&nbsp; </span><b>$${Math.round(tg/DAYS_LEFT/100)*100}/day</b><span> needed collectively</span>`;
+}
+
+function buildTabs(){
+  document.getElementById('kpi-tabs').innerHTML=FIELDS.map(f=>
+    `<button class="kt${f.id===activeKpi?' active':''}" data-id="${f.id}" onclick="setKpi('${f.id}')">${f.label}</button>`
+  ).join('');
+}
+
+function renderTargetBoxes(kpiData, field, cols4) {
+  const gap = kpiData.gap;
+  const met = gap <= 0;
+  const colCls = cols4 ? 'cols4' : 'cols3';
+  if (met) {
+    return `<div class="targets ${colCls}">
+      <div class="tbox"><div class="tbox-lbl">Gap</div><div class="tbox-val green">Met!</div></div>
+      <div class="tbox"><div class="tbox-lbl">Per Day</div><div class="tbox-val green">✓</div></div>
+      <div class="tbox"><div class="tbox-lbl">Per Week</div><div class="tbox-val green">✓</div></div>
+      ${cols4?`<div class="tbox"><div class="tbox-lbl">Target</div><div class="tbox-val">${fmt(kpiData.target,field)}</div></div>`:''}
+    </div>`;
+  }
+  return `<div class="targets ${colCls}">
+    <div class="tbox"><div class="tbox-lbl">Gap</div><div class="tbox-val red">${fmt(gap, field)}</div></div>
+    <div class="tbox"><div class="tbox-lbl">Per Day</div><div class="tbox-val red">${fmt(kpiData.daily, field)}</div></div>
+    <div class="tbox"><div class="tbox-lbl">Per Week</div><div class="tbox-val red">${fmt(kpiData.weekly, field)}</div></div>
+    ${cols4?`<div class="tbox"><div class="tbox-lbl">Target</div><div class="tbox-val">${fmt(kpiData.target,field)}</div></div>`:''}
+  </div>`;
+}
+
+function render(){
+  const q=document.getElementById('search').value.toLowerCase();
+  const sort=document.getElementById('sort-sel').value;
+  const activeField = FIELDS.find(f=>f.id===activeKpi);
+
+  let list=DATA.filter(d=>d.l.toLowerCase().includes(q));
+  if(activeFilter==='behind')  list=list.filter(d=>d.kpis.rev.pct<100);
+  if(activeFilter==='ontrack') list=list.filter(d=>d.kpis.rev.pct>=100);
+
+  if(sort==='name')  list.sort((a,b)=>a.l.localeCompare(b.l));
+  if(sort==='gap')   list.sort((a,b)=>b.kpis.rev.gap-a.kpis.rev.gap);
+  if(sort==='pct')   list.sort((a,b)=>a.kpis.rev.pct-b.kpis.rev.pct);
+  if(sort==='daily') list.sort((a,b)=>b.kpis.rev.daily-a.kpis.rev.daily);
+
+  if(!list.length){document.getElementById('grid').innerHTML='<div class="no-results">No locations match.</div>';return;}
+
+  document.getElementById('grid').innerHTML=list.map(d=>{
+    const pk = d.kpis[activeKpi];
+    const fp = Math.min(100, pk.pct);
+    const variance = d[VARFIELDS[activeKpi]];
+
+    // Build other KPI rows
+    const otherRows = FIELDS.filter(f=>f.id!==activeKpi).map(f=>{
+      const k = d.kpis[f.id];
+      const v = d[VARFIELDS[f.id]];
+      const met = k.gap <= 0;
+      return `<div class="kr">
+        <div class="kr-left">
+          <div class="kr-name">${f.label}</div>
+          <div class="kr-vals">
+            <span class="kr-val">${fmt(k.val,f)}</span>
+            <span class="var-tag ${varCls(v)}">${varLbl(v)}</span>
+            <span style="font-size:10px;color:var(--text-3)">/ tgt ${fmt(k.target,f)}</span>
+          </div>
+        </div>
+        <div class="kr-targets">
+          <div class="kr-tbox">
+            <span class="kr-tbox-lbl">Gap</span>
+            <span class="kr-tbox-val ${met?'green':'red'}">${met?'✓':fmt(k.gap,f)}</span>
+          </div>
+          <div class="kr-tbox">
+            <span class="kr-tbox-lbl">/ Day</span>
+            <span class="kr-tbox-val ${met?'green':'red'}">${met?'✓':fmt(k.daily,f)}</span>
+          </div>
+          <div class="kr-tbox">
+            <span class="kr-tbox-lbl">/ Week</span>
+            <span class="kr-tbox-val ${met?'green':'red'}">${met?'✓':fmt(k.weekly,f)}</span>
+          </div>
+        </div>
+      </div>`;
+    }).join('');
+
+    return `<div class="lc">
+      <div class="lc-head">
+        <div class="lc-name">${d.l}</div>
+        ${badge(d.kpis.rev.pct)}
+      </div>
+      <div class="lc-primary">
+        <div class="prog-top">
+          <span class="prog-val">${fmt(pk.val, activeField)}</span>
+          <span class="prog-tgt">target: ${fmt(pk.target, activeField)}</span>
+        </div>
+        <div class="pbar-wrap"><div class="pbar-fill ${fillCls(fp)}" style="width:${fp}%"></div></div>
+        <div class="prog-meta">
+          <span>${fp}% of target</span>
+          <span class="var-tag ${varCls(variance)}">${varLbl(variance)}</span>
+        </div>
+        ${renderTargetBoxes(pk, activeField, true)}
+      </div>
+      <div class="kpi-rows">
+        <div class="kr-section-label">All KPIs — Gap · Per Day · Per Week</div>
+        ${otherRows}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+buildSummary();
+buildTabs();
+render();
+</script>
+</body>
+</html>
