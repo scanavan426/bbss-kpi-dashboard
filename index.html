@@ -141,6 +141,14 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);fon
       <button class="fb" onclick="setFilter('behind',this)">Behind target</button>
       <button class="fb" onclick="setFilter('ontrack',this)">On track</button>
     </div>
+    <select class="sort-sel" id="region-sel" onchange="render()">
+      <option value="all">All Regions</option>
+      <option value="South">South</option>
+      <option value="East">East</option>
+      <option value="Midwest">Midwest</option>
+      <option value="Southwest">Southwest</option>
+      <option value="West">West</option>
+    </select>
     <select class="sort-sel" id="sort-sel" onchange="render()">
       <option value="name">Sort: A–Z</option>
       <option value="gap">Sort: Largest rev gap</option>
@@ -159,50 +167,54 @@ document.getElementById('days-left').textContent=DAYS_LEFT;
 
 // Raw data — all from Evidence Studio, March 1–31, 2026
 const RAW=[
-  {l:"Allen",                   rev:146111,revV:-0.126, lsStart:170,lsStartV:-0.341,lsStop:76, lsStopV:-0.510,sched:142,schedV:-0.134,attended:104,attendedV:-0.302,converted:77, convertedV:-0.579,newSt:77, newStV:-0.579,retSt:50,retStV:-0.515},
-  {l:"Atlanta - N. Druid Hills", rev:84058, revV:-0.138, lsStart:110,lsStartV:-0.357,lsStop:34, lsStopV:-0.622,sched:150,schedV:-0.085,attended:106,attendedV:-0.289,converted:73, convertedV:-0.500,newSt:73, newStV:-0.500,retSt:19,retStV:-0.620},
-  {l:"Buffalo Grove",            rev:153147,revV: 0.036, lsStart:120,lsStartV:-0.195,lsStop:64, lsStopV:-0.434,sched:53, schedV:-0.480,attended:37, attendedV:-0.602,converted:48, convertedV:-0.422,newSt:48, newStV:-0.422,retSt:43,retStV:-0.419},
-  {l:"Chantilly",                rev:136819,revV:-0.069, lsStart:140,lsStartV:-0.300,lsStop:70, lsStopV:-0.400,sched:39, schedV:-0.585,attended:39, attendedV:-0.585,converted:37, convertedV:-0.589,newSt:37, newStV:-0.589,retSt:41,retStV:-0.414},
-  {l:"Chicago - North Center",   rev:239537,revV:-0.062, lsStart:200,lsStartV:-0.250,lsStop:90, lsStopV:-0.400,sched:86, schedV:-0.543,attended:86, attendedV:-0.543,converted:114,convertedV:-0.197,newSt:114,newStV:-0.197,retSt:62,retStV:-0.516},
-  {l:"Dulles",                   rev:136304,revV:-0.148, lsStart:130,lsStartV:-0.380,lsStop:65, lsStopV:-0.480,sched:39, schedV:-0.585,attended:39, attendedV:-0.585,converted:32, convertedV:-0.701,newSt:32, newStV:-0.701,retSt:32,retStV:-0.475},
-  {l:"Fairfax",                  rev:179212,revV:-0.046, lsStart:160,lsStartV:-0.300,lsStop:80, lsStopV:-0.350,sched:130,schedV:-0.150,attended:130,attendedV:-0.150,converted:75, convertedV:-0.450,newSt:75, newStV:-0.450,retSt:55,retStV:-0.350},
-  {l:"Falls Church",             rev:199297,revV:-0.064, lsStart:175,lsStartV:-0.280,lsStop:88, lsStopV:-0.380,sched:145,schedV:-0.120,attended:145,attendedV:-0.120,converted:80, convertedV:-0.400,newSt:80, newStV:-0.400,retSt:60,retStV:-0.350},
-  {l:"Frisco",                   rev:181042,revV:-0.066, lsStart:165,lsStartV:-0.290,lsStop:82, lsStopV:-0.370,sched:135,schedV:-0.140,attended:135,attendedV:-0.140,converted:78, convertedV:-0.420,newSt:78, newStV:-0.420,retSt:58,retStV:-0.340},
-  {l:"Germantown",               rev:133373,revV:-0.144, lsStart:125,lsStartV:-0.400,lsStop:62, lsStopV:-0.500,sched:100,schedV:-0.300,attended:100,attendedV:-0.300,converted:60, convertedV:-0.500,newSt:60, newStV:-0.500,retSt:45,retStV:-0.400},
-  {l:"Gilbert",                  rev:67786, revV:-0.110, lsStart:90, lsStartV:-0.350,lsStop:40, lsStopV:-0.450,sched:80, schedV:-0.250,attended:80, attendedV:-0.250,converted:50, convertedV:-0.450,newSt:50, newStV:-0.450,retSt:30,retStV:-0.400},
-  {l:"Hoffman Estates",          rev:93816, revV:-0.109, lsStart:120,lsStartV:-0.178,lsStop:45, lsStopV:-0.583,sched:29, schedV:-0.674,attended:29, attendedV:-0.674,converted:40, convertedV:-0.626,newSt:40, newStV:-0.626,retSt:44,retStV:-0.254},
-  {l:"Huntington Beach",         rev:179390,revV:-0.055, lsStart:124,lsStartV:-0.446,lsStop:85, lsStopV:-0.437,sched:81, schedV:-0.491,attended:81, attendedV:-0.491,converted:58, convertedV:-0.621,newSt:58, newStV:-0.621,retSt:33,retStV:-0.607},
-  {l:"Johns Creek",              rev:148397,revV:-0.163, lsStart:129,lsStartV:-0.486,lsStop:73, lsStopV:-0.447,sched:72, schedV:-0.579,attended:72, attendedV:-0.579,converted:37, convertedV:-0.755,newSt:37, newStV:-0.755,retSt:54,retStV:-0.522},
-  {l:"Lakewood",                 rev:193068,revV: 0.034, lsStart:210,lsStartV: 0.050,lsStop:95, lsStopV:-0.300,sched:348,schedV: 0.944,attended:348,attendedV: 0.944,converted:186,convertedV:-0.061,newSt:186,newStV:-0.061,retSt:42,retStV:-0.475},
-  {l:"Niles",                    rev:114148,revV:-0.102, lsStart:102,lsStartV:-0.311,lsStop:51, lsStopV:-0.320,sched:33, schedV:-0.673,attended:33, attendedV:-0.673,converted:43, convertedV:-0.557,newSt:43, newStV:-0.557,retSt:39,retStV:-0.361},
-  {l:"Plano",                    rev:90730, revV:-0.146, lsStart:127,lsStartV:-0.342,lsStop:71, lsStopV:-0.211,sched:59, schedV:-0.524,attended:59, attendedV:-0.524,converted:48, convertedV:-0.647,newSt:48, newStV:-0.647,retSt:33,retStV:-0.582},
-  {l:"San Diego - Point Loma",   rev:156871,revV:-0.098, lsStart:164,lsStartV:-0.302,lsStop:63, lsStopV:-0.550,sched:103,schedV:-0.425,attended:103,attendedV:-0.425,converted:83, convertedV:-0.484,newSt:83, newStV:-0.484,retSt:37,retStV:-0.500},
-  {l:"Springfield",              rev:233594,revV:-0.117, lsStart:193,lsStartV:-0.316,lsStop:113,lsStopV:-0.383,sched:87, schedV:-0.511,attended:87, attendedV:-0.511,converted:82, convertedV:-0.577,newSt:82, newStV:-0.577,retSt:62,retStV:-0.367},
-  {l:"Torrance",                 rev:239275,revV: 0.106, lsStart:272,lsStartV: 0.026,lsStop:100,lsStopV:-0.558,sched:281,schedV: 0.495,attended:281,attendedV: 0.495,converted:190,convertedV:-0.040,newSt:190,newStV:-0.040,retSt:39,retStV:-0.547},
-  {l:"Tustin",                   rev:179411,revV:-0.059, lsStart:156,lsStartV:-0.378,lsStop:126,lsStopV:-0.337,sched:109,schedV:-0.449,attended:109,attendedV:-0.449,converted:78, convertedV:-0.574,newSt:78, newStV:-0.574,retSt:55,retStV:-0.402},
-  {l:"Wilmette",                 rev:116313,revV:-0.045, lsStart:110,lsStartV:-0.200,lsStop:55, lsStopV:-0.300,sched:24, schedV:-0.671,attended:24, attendedV:-0.671,converted:31, convertedV:-0.608,newSt:31, newStV:-0.608,retSt:23,retStV:-0.521},
+  {l:"Allen",                   r:"South",     rev:146111,revV:-0.126, lsStart:170,lsStartV:-0.341,lsStop:76, lsStopV:-0.510,sched:142,schedV:-0.134,attended:104,attendedV:-0.302,converted:77, convertedV:-0.579,newSt:77, newStV:-0.579,retSt:50,retStV:-0.515},
+  {l:"Atlanta - N. Druid Hills", r:"South",    rev:84058, revV:-0.138, lsStart:110,lsStartV:-0.357,lsStop:34, lsStopV:-0.622,sched:150,schedV:-0.085,attended:106,attendedV:-0.289,converted:73, convertedV:-0.500,newSt:73, newStV:-0.500,retSt:19,retStV:-0.620},
+  {l:"Buffalo Grove",            r:"Midwest",  rev:153147,revV: 0.036, lsStart:120,lsStartV:-0.195,lsStop:64, lsStopV:-0.434,sched:53, schedV:-0.480,attended:37, attendedV:-0.602,converted:48, convertedV:-0.422,newSt:48, newStV:-0.422,retSt:43,retStV:-0.419},
+  {l:"Chantilly",                r:"East",     rev:136819,revV:-0.069, lsStart:140,lsStartV:-0.300,lsStop:70, lsStopV:-0.400,sched:39, schedV:-0.585,attended:39, attendedV:-0.585,converted:37, convertedV:-0.589,newSt:37, newStV:-0.589,retSt:41,retStV:-0.414},
+  {l:"Chicago - North Center",   r:"Midwest",  rev:239537,revV:-0.062, lsStart:200,lsStartV:-0.250,lsStop:90, lsStopV:-0.400,sched:86, schedV:-0.543,attended:86, attendedV:-0.543,converted:114,convertedV:-0.197,newSt:114,newStV:-0.197,retSt:62,retStV:-0.516},
+  {l:"Dulles",                   r:"East",     rev:136304,revV:-0.148, lsStart:130,lsStartV:-0.380,lsStop:65, lsStopV:-0.480,sched:39, schedV:-0.585,attended:39, attendedV:-0.585,converted:32, convertedV:-0.701,newSt:32, newStV:-0.701,retSt:32,retStV:-0.475},
+  {l:"Fairfax",                  r:"East",     rev:179212,revV:-0.046, lsStart:160,lsStartV:-0.300,lsStop:80, lsStopV:-0.350,sched:130,schedV:-0.150,attended:130,attendedV:-0.150,converted:75, convertedV:-0.450,newSt:75, newStV:-0.450,retSt:55,retStV:-0.350},
+  {l:"Falls Church",             r:"East",     rev:199297,revV:-0.064, lsStart:175,lsStartV:-0.280,lsStop:88, lsStopV:-0.380,sched:145,schedV:-0.120,attended:145,attendedV:-0.120,converted:80, convertedV:-0.400,newSt:80, newStV:-0.400,retSt:60,retStV:-0.350},
+  {l:"Frisco",                   r:"South",    rev:181042,revV:-0.066, lsStart:165,lsStartV:-0.290,lsStop:82, lsStopV:-0.370,sched:135,schedV:-0.140,attended:135,attendedV:-0.140,converted:78, convertedV:-0.420,newSt:78, newStV:-0.420,retSt:58,retStV:-0.340},
+  {l:"Germantown",               r:"East",     rev:133373,revV:-0.144, lsStart:125,lsStartV:-0.400,lsStop:62, lsStopV:-0.500,sched:100,schedV:-0.300,attended:100,attendedV:-0.300,converted:60, convertedV:-0.500,newSt:60, newStV:-0.500,retSt:45,retStV:-0.400},
+  {l:"Gilbert",                  r:"Southwest",rev:67786, revV:-0.110, lsStart:90, lsStartV:-0.350,lsStop:40, lsStopV:-0.450,sched:80, schedV:-0.250,attended:80, attendedV:-0.250,converted:50, convertedV:-0.450,newSt:50, newStV:-0.450,retSt:30,retStV:-0.400},
+  {l:"Hoffman Estates",          r:"Midwest",  rev:93816, revV:-0.109, lsStart:120,lsStartV:-0.178,lsStop:45, lsStopV:-0.583,sched:29, schedV:-0.674,attended:29, attendedV:-0.674,converted:40, convertedV:-0.626,newSt:40, newStV:-0.626,retSt:44,retStV:-0.254},
+  {l:"Huntington Beach",         r:"West",     rev:179390,revV:-0.055, lsStart:124,lsStartV:-0.446,lsStop:85, lsStopV:-0.437,sched:81, schedV:-0.491,attended:81, attendedV:-0.491,converted:58, convertedV:-0.621,newSt:58, newStV:-0.621,retSt:33,retStV:-0.607},
+  {l:"Johns Creek",              r:"South",    rev:148397,revV:-0.163, lsStart:129,lsStartV:-0.486,lsStop:73, lsStopV:-0.447,sched:72, schedV:-0.579,attended:72, attendedV:-0.579,converted:37, convertedV:-0.755,newSt:37, newStV:-0.755,retSt:54,retStV:-0.522},
+  {l:"Lakewood",                 r:"West",     rev:193068,revV: 0.034, lsStart:210,lsStartV: 0.050,lsStop:95, lsStopV:-0.300,sched:348,schedV: 0.944,attended:348,attendedV: 0.944,converted:186,convertedV:-0.061,newSt:186,newStV:-0.061,retSt:42,retStV:-0.475},
+  {l:"Niles",                    r:"Midwest",  rev:114148,revV:-0.102, lsStart:102,lsStartV:-0.311,lsStop:51, lsStopV:-0.320,sched:33, schedV:-0.673,attended:33, attendedV:-0.673,converted:43, convertedV:-0.557,newSt:43, newStV:-0.557,retSt:39,retStV:-0.361},
+  {l:"Plano",                    r:"South",    rev:90730, revV:-0.146, lsStart:127,lsStartV:-0.342,lsStop:71, lsStopV:-0.211,sched:59, schedV:-0.524,attended:59, attendedV:-0.524,converted:48, convertedV:-0.647,newSt:48, newStV:-0.647,retSt:33,retStV:-0.582},
+  {l:"San Diego - Point Loma",   r:"West",     rev:156871,revV:-0.098, lsStart:164,lsStartV:-0.302,lsStop:63, lsStopV:-0.550,sched:103,schedV:-0.425,attended:103,attendedV:-0.425,converted:83, convertedV:-0.484,newSt:83, newStV:-0.484,retSt:37,retStV:-0.500},
+  {l:"Springfield",              r:"East",     rev:233594,revV:-0.117, lsStart:193,lsStartV:-0.316,lsStop:113,lsStopV:-0.383,sched:87, schedV:-0.511,attended:87, attendedV:-0.511,converted:82, convertedV:-0.577,newSt:82, newStV:-0.577,retSt:62,retStV:-0.367},
+  {l:"Torrance",                 r:"West",     rev:239275,revV: 0.106, lsStart:272,lsStartV: 0.026,lsStop:100,lsStopV:-0.558,sched:281,schedV: 0.495,attended:281,attendedV: 0.495,converted:190,convertedV:-0.040,newSt:190,newStV:-0.040,retSt:39,retStV:-0.547},
+  {l:"Tustin",                   r:"West",     rev:179411,revV:-0.059, lsStart:156,lsStartV:-0.378,lsStop:126,lsStopV:-0.337,sched:109,schedV:-0.449,attended:109,attendedV:-0.449,converted:78, convertedV:-0.574,newSt:78, newStV:-0.574,retSt:55,retStV:-0.402},
+  {l:"Wilmette",                 r:"Midwest",  rev:116313,revV:-0.045, lsStart:110,lsStartV:-0.200,lsStop:55, lsStopV:-0.300,sched:24, schedV:-0.671,attended:24, attendedV:-0.671,converted:31, convertedV:-0.608,newSt:31, newStV:-0.608,retSt:23,retStV:-0.521},
 ];
 
 // For each numeric field, compute target, gap, daily needed, weekly needed
-function calcKpi(val, variance) {
+// lowerIsBetter: for Lessons Stopped, being below target is GOOD
+function calcKpi(val, variance, lowerIsBetter) {
   const target = val / (1 + variance);
-  const gap = target - val;
-  const pct = Math.round((val / target) * 100);
-  const isRev = false; // handled below
-  const daily = gap > 0 ? gap / DAYS_LEFT : 0;
+  // For lower-is-better: gap is how much we are OVER target (positive = bad)
+  const gap = lowerIsBetter ? val - target : target - val;
+  // pct: for lower-is-better, under target = >100% (on track)
+  const pct = lowerIsBetter
+    ? Math.round((target / val) * 100)   // inverted: if val < target, pct > 100
+    : Math.round((val / target) * 100);
+  const daily  = gap > 0 ? gap / DAYS_LEFT  : 0;
   const weekly = gap > 0 ? gap / WEEKS_LEFT : 0;
-  return { val, target, gap, pct, daily, weekly };
+  return { val, target, gap, pct, daily, weekly, lowerIsBetter };
 }
 
 const FIELDS = [
-  { id:'rev',       label:'Revenue',          prefix:'$', decimal:false, isRev:true  },
-  { id:'sched',     label:'Trials Scheduled', prefix:'',  decimal:false              },
-  { id:'attended',  label:'Trials Attended',  prefix:'',  decimal:false              },
-  { id:'converted', label:'Trials Converted', prefix:'',  decimal:false              },
-  { id:'newSt',     label:'New Students',     prefix:'',  decimal:false              },
-  { id:'retSt',     label:'Return Students',  prefix:'',  decimal:false              },
-  { id:'lsStart',   label:'Lessons Started',  prefix:'',  decimal:false              },
-  { id:'lsStop',    label:'Lessons Stopped',  prefix:'',  decimal:false              },
+  { id:'rev',       label:'Revenue',          prefix:'$', decimal:false, isRev:true                },
+  { id:'sched',     label:'Trials Scheduled', prefix:'',  decimal:false                            },
+  { id:'attended',  label:'Trials Attended',  prefix:'',  decimal:false                            },
+  { id:'converted', label:'Trials Converted', prefix:'',  decimal:false                            },
+  { id:'newSt',     label:'New Students',     prefix:'',  decimal:false                            },
+  { id:'retSt',     label:'Return Students',  prefix:'',  decimal:false                            },
+  { id:'lsStart',   label:'Lessons Started',  prefix:'',  decimal:false                            },
+  { id:'lsStop',    label:'Lessons Stopped',  prefix:'',  decimal:false, lowerIsBetter:true        },
 ];
 const VARFIELDS = {
   rev:'revV', sched:'schedV', attended:'attendedV', converted:'convertedV',
@@ -212,7 +224,7 @@ const VARFIELDS = {
 const DATA = RAW.map(d => {
   const kpis = {};
   FIELDS.forEach(f => {
-    kpis[f.id] = calcKpi(d[f.id], d[VARFIELDS[f.id]]);
+    kpis[f.id] = calcKpi(d[f.id], d[VARFIELDS[f.id]], f.lowerIsBetter||false);
   });
   return { ...d, kpis };
 });
@@ -280,18 +292,21 @@ function renderTargetBoxes(kpiData, field, cols4) {
   const gap = kpiData.gap;
   const met = gap <= 0;
   const colCls = cols4 ? 'cols4' : 'cols3';
+  const gapLabel = field.lowerIsBetter ? 'Over by' : 'Gap';
+  const dayLabel = field.lowerIsBetter ? 'Reduce/Day' : 'Per Day';
+  const wkLabel  = field.lowerIsBetter ? 'Reduce/Wk' : 'Per Week';
   if (met) {
     return `<div class="targets ${colCls}">
-      <div class="tbox"><div class="tbox-lbl">Gap</div><div class="tbox-val green">Met!</div></div>
-      <div class="tbox"><div class="tbox-lbl">Per Day</div><div class="tbox-val green">✓</div></div>
-      <div class="tbox"><div class="tbox-lbl">Per Week</div><div class="tbox-val green">✓</div></div>
+      <div class="tbox"><div class="tbox-lbl">${gapLabel}</div><div class="tbox-val green">✓ Good</div></div>
+      <div class="tbox"><div class="tbox-lbl">${dayLabel}</div><div class="tbox-val green">✓</div></div>
+      <div class="tbox"><div class="tbox-lbl">${wkLabel}</div><div class="tbox-val green">✓</div></div>
       ${cols4?`<div class="tbox"><div class="tbox-lbl">Target</div><div class="tbox-val">${fmt(kpiData.target,field)}</div></div>`:''}
     </div>`;
   }
   return `<div class="targets ${colCls}">
-    <div class="tbox"><div class="tbox-lbl">Gap</div><div class="tbox-val red">${fmt(gap, field)}</div></div>
-    <div class="tbox"><div class="tbox-lbl">Per Day</div><div class="tbox-val red">${fmt(kpiData.daily, field)}</div></div>
-    <div class="tbox"><div class="tbox-lbl">Per Week</div><div class="tbox-val red">${fmt(kpiData.weekly, field)}</div></div>
+    <div class="tbox"><div class="tbox-lbl">${gapLabel}</div><div class="tbox-val red">${fmt(gap, field)}</div></div>
+    <div class="tbox"><div class="tbox-lbl">${dayLabel}</div><div class="tbox-val red">${fmt(kpiData.daily, field)}</div></div>
+    <div class="tbox"><div class="tbox-lbl">${wkLabel}</div><div class="tbox-val red">${fmt(kpiData.weekly, field)}</div></div>
     ${cols4?`<div class="tbox"><div class="tbox-lbl">Target</div><div class="tbox-val">${fmt(kpiData.target,field)}</div></div>`:''}
   </div>`;
 }
@@ -299,9 +314,11 @@ function renderTargetBoxes(kpiData, field, cols4) {
 function render(){
   const q=document.getElementById('search').value.toLowerCase();
   const sort=document.getElementById('sort-sel').value;
+  const region=document.getElementById('region-sel').value;
   const activeField = FIELDS.find(f=>f.id===activeKpi);
 
   let list=DATA.filter(d=>d.l.toLowerCase().includes(q));
+  if(region!=='all') list=list.filter(d=>d.r===region);
   if(activeFilter==='behind')  list=list.filter(d=>d.kpis.rev.pct<100);
   if(activeFilter==='ontrack') list=list.filter(d=>d.kpis.rev.pct>=100);
 
@@ -316,32 +333,38 @@ function render(){
     const pk = d.kpis[activeKpi];
     const fp = Math.min(100, pk.pct);
     const variance = d[VARFIELDS[activeKpi]];
+    const primaryVarCls = activeField.lowerIsBetter ? (variance<0?'pos':variance>0?'neg':'neu') : varCls(variance);
 
     // Build other KPI rows
     const otherRows = FIELDS.filter(f=>f.id!==activeKpi).map(f=>{
       const k = d.kpis[f.id];
       const v = d[VARFIELDS[f.id]];
       const met = k.gap <= 0;
+      const gapLbl = f.lowerIsBetter ? 'Over' : 'Gap';
+      const dayLbl  = f.lowerIsBetter ? '-/Day' : '/Day';
+      const wkLbl   = f.lowerIsBetter ? '-/Wk'  : '/Wk';
+      // For lower-is-better, negative variance = good (fewer stops = good)
+      const varClsAdj = f.lowerIsBetter ? (v<0?'pos':v>0?'neg':'neu') : varCls(v);
       return `<div class="kr">
         <div class="kr-left">
-          <div class="kr-name">${f.label}</div>
+          <div class="kr-name">${f.label}${f.lowerIsBetter?' <span style="font-size:9px;color:var(--text-3)">(lower=better)</span>':''}</div>
           <div class="kr-vals">
             <span class="kr-val">${fmt(k.val,f)}</span>
-            <span class="var-tag ${varCls(v)}">${varLbl(v)}</span>
+            <span class="var-tag ${varClsAdj}">${varLbl(v)}</span>
             <span style="font-size:10px;color:var(--text-3)">/ tgt ${fmt(k.target,f)}</span>
           </div>
         </div>
         <div class="kr-targets">
           <div class="kr-tbox">
-            <span class="kr-tbox-lbl">Gap</span>
+            <span class="kr-tbox-lbl">${gapLbl}</span>
             <span class="kr-tbox-val ${met?'green':'red'}">${met?'✓':fmt(k.gap,f)}</span>
           </div>
           <div class="kr-tbox">
-            <span class="kr-tbox-lbl">/ Day</span>
+            <span class="kr-tbox-lbl">${dayLbl}</span>
             <span class="kr-tbox-val ${met?'green':'red'}">${met?'✓':fmt(k.daily,f)}</span>
           </div>
           <div class="kr-tbox">
-            <span class="kr-tbox-lbl">/ Week</span>
+            <span class="kr-tbox-lbl">${wkLbl}</span>
             <span class="kr-tbox-val ${met?'green':'red'}">${met?'✓':fmt(k.weekly,f)}</span>
           </div>
         </div>
@@ -351,7 +374,10 @@ function render(){
     return `<div class="lc">
       <div class="lc-head">
         <div class="lc-name">${d.l}</div>
-        ${badge(d.kpis.rev.pct)}
+        <div style="display:flex;gap:5px;align-items:center;">
+          <span style="font-size:10px;color:var(--text-3);background:var(--bg);padding:2px 6px;border-radius:4px;">${d.r}</span>
+          ${badge(d.kpis.rev.pct)}
+        </div>
       </div>
       <div class="lc-primary">
         <div class="prog-top">
@@ -361,7 +387,7 @@ function render(){
         <div class="pbar-wrap"><div class="pbar-fill ${fillCls(fp)}" style="width:${fp}%"></div></div>
         <div class="prog-meta">
           <span>${fp}% of target</span>
-          <span class="var-tag ${varCls(variance)}">${varLbl(variance)}</span>
+          <span class="var-tag ${primaryVarCls}">${varLbl(variance)}</span>
         </div>
         ${renderTargetBoxes(pk, activeField, true)}
       </div>
