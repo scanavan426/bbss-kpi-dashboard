@@ -51,7 +51,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);fon
 .rc-stat-sub.green{color:var(--green);}
 .rc-locations{padding:10px 14px;font-size:11px;color:var(--text-2);}
 .rc-pbar-wrap{height:4px;background:var(--bg);overflow:hidden;}
-.rc-pbar-fill{height:100%;background:var(--blue);}
+.rc-pbar-fill{height:100%;}
 .controls{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:1.25rem;}
 .search-wrap{position:relative;min-width:200px;}
 .search-wrap svg{position:absolute;left:9px;top:50%;transform:translateY(-50%);color:var(--text-3);pointer-events:none;}
@@ -165,211 +165,58 @@ const TODAY=new Date('2026-03-19'), MONTH_END=new Date('2026-03-31');
 const DAYS_LEFT=Math.round((MONTH_END-TODAY)/86400000)+1;
 const WEEKS_LEFT=DAYS_LEFT/7;
 document.getElementById('days-left').textContent=DAYS_LEFT;
-const RAW=[
-  {l:"Allen",                  r:"South",     rev:146667,revV:-0.123,lsStart:173,lsStartV:-0.329,lsStop:76, lsStopV:-0.510,sched:145,schedV:-0.116,attendedR:0.46,attendedV:-0.24,conv:78, convV:0.08, newSt:81, newStV:-0.557,retSt:51,retStV:-0.505},
-  {l:"Atlanta - N. Druid Hills",r:"South",    rev:84336, revV:-0.135,lsStart:111,lsStartV:-0.351,lsStop:35, lsStopV:-0.611,sched:159,schedV:-0.0305,attendedR:0.45,attendedV:-0.25,conv:83, convV:0.13, newSt:75, newStV:-0.486,retSt:20,retStV:-0.600},
-  {l:"Buffalo Grove",           r:"Midwest",  rev:153378,revV:0.0373, lsStart:121,lsStartV:-0.188,lsStop:64, lsStopV:-0.434,sched:54, schedV:-0.471,attendedR:0.70,attendedV:0.00, conv:95, convV:0.25, newSt:49, newStV:-0.410,retSt:44,retStV:-0.405},
-  {l:"Chantilly",               r:"East",     rev:136999,revV:-0.0677,lsStart:105,lsStartV:-0.335,lsStop:55, lsStopV:-0.522,sched:67, schedV:-0.356,attendedR:0.51,attendedV:-0.19,conv:76, convV:0.06, newSt:37, newStV:-0.589,retSt:42,retStV:-0.400},
-  {l:"Chicago - North Center",  r:"Midwest",  rev:239965,revV:-0.0607,lsStart:221,lsStartV:-0.168,lsStop:99, lsStopV:-0.356,sched:174,schedV:-0.159,attendedR:0.55,attendedV:-0.15,conv:65, convV:-0.05,newSt:115,newStV:-0.190,retSt:66,retStV:-0.484},
-  {l:"Dulles",                  r:"East",     rev:136710,revV:-0.146,lsStart:123,lsStartV:-0.392,lsStop:59, lsStopV:-0.539,sched:75, schedV:-0.453,attendedR:0.64,attendedV:-0.06,conv:63, convV:-0.07,newSt:32, newStV:-0.701,retSt:32,retStV:-0.475},
-  {l:"Fairfax",                 r:"East",     rev:179726,revV:-0.0429,lsStart:163,lsStartV:-0.286,lsStop:81, lsStopV:-0.346,sched:131,schedV:-0.142,attendedR:0.58,attendedV:-0.12,conv:74, convV:0.04, newSt:76, newStV:-0.441,retSt:57,retStV:-0.330},
-  {l:"Falls Church",            r:"East",     rev:199836,revV:-0.0609,lsStart:178,lsStartV:-0.271,lsStop:89, lsStopV:-0.374,sched:147,schedV:-0.109,attendedR:0.62,attendedV:-0.08,conv:76, convV:0.06, newSt:82, newStV:-0.389,retSt:62,retStV:-0.338},
-  {l:"Frisco",                  r:"South",    rev:181585,revV:-0.0628,lsStart:167,lsStartV:-0.283,lsStop:83, lsStopV:-0.364,sched:137,schedV:-0.131,attendedR:0.59,attendedV:-0.11,conv:73, convV:0.03, newSt:79, newStV:-0.413,retSt:59,retStV:-0.333},
-  {l:"Germantown",              r:"East",     rev:133958,revV:-0.140,lsStart:128,lsStartV:-0.388,lsStop:63, lsStopV:-0.493,sched:102,schedV:-0.291,attendedR:0.55,attendedV:-0.15,conv:67, convV:-0.03,newSt:62, newStV:-0.488,retSt:47,retStV:-0.387},
-  {l:"Gilbert",                 r:"Southwest",rev:67908, revV:-0.108,lsStart:91, lsStartV:-0.344,lsStop:41, lsStopV:-0.443,sched:82, schedV:-0.242,attendedR:0.53,attendedV:-0.17,conv:68, convV:-0.02,newSt:51, newStV:-0.441,retSt:31,retStV:-0.393},
-  {l:"Hoffman Estates",         r:"Midwest",  rev:94121, revV:-0.106,lsStart:124,lsStartV:-0.151,lsStop:47, lsStopV:-0.565,sched:58, schedV:-0.408,attendedR:0.67,attendedV:-0.03,conv:92, convV:0.22, newSt:41, newStV:-0.617,retSt:47,retStV:-0.203},
-  {l:"Huntington Beach",        r:"West",     rev:179770,revV:-0.0532,lsStart:127,lsStartV:-0.433,lsStop:87, lsStopV:-0.424,sched:119,schedV:-0.320,attendedR:0.65,attendedV:-0.05,conv:57, convV:-0.13,newSt:59, newStV:-0.614,retSt:35,retStV:-0.583},
-  {l:"Johns Creek",             r:"South",    rev:148803,revV:-0.161,lsStart:134,lsStartV:-0.466,lsStop:74, lsStopV:-0.439,sched:117,schedV:-0.378,attendedR:0.40,attendedV:-0.30,conv:70, convV:0.00, newSt:39, newStV:-0.742,retSt:57,retStV:-0.496},
-  {l:"Lakewood",                r:"West",     rev:194163,revV:0.0400, lsStart:314,lsStartV:0.198, lsStop:135,lsStopV:-0.357,sched:495,schedV:1.510, attendedR:0.44,attendedV:-0.26,conv:63, convV:-0.07,newSt:197,newStV:-0.0051,retSt:44,retStV:-0.450},
-  {l:"Niles",                   r:"Midwest",  rev:114221,revV:-0.101,lsStart:102,lsStartV:-0.311,lsStop:48, lsStopV:-0.351,sched:44, schedV:-0.604,attendedR:0.61,attendedV:-0.09,conv:81, convV:0.11, newSt:44, newStV:-0.546,retSt:39,retStV:-0.361},
-  {l:"Plano",                   r:"South",    rev:90915, revV:-0.144,lsStart:127,lsStartV:-0.342,lsStop:68, lsStopV:-0.244,sched:94, schedV:-0.314,attendedR:0.44,attendedV:-0.26,conv:78, convV:0.08, newSt:52, newStV:-0.618,retSt:33,retStV:-0.582},
-  {l:"San Diego - Point Loma",  r:"West",     rev:157741,revV:-0.0926,lsStart:167,lsStartV:-0.289,lsStop:65, lsStopV:-0.536,sched:163,schedV:-0.173,attendedR:0.54,attendedV:-0.16,conv:60, convV:-0.10,newSt:85, newStV:-0.472,retSt:40,retStV:-0.459},
-  {l:"Springfield",             r:"East",     rev:234203,revV:-0.115,lsStart:197,lsStartV:-0.301,lsStop:114,lsStopV:-0.377,sched:142,schedV:-0.276,attendedR:0.60,attendedV:-0.10,conv:72, convV:0.02, newSt:85, newStV:-0.562,retSt:64,retStV:-0.347},
-  {l:"Torrance",                r:"West",     rev:240065,revV:0.110,  lsStart:273,lsStartV:0.0302,lsStop:100,lsStopV:-0.558,sched:392,schedV:0.894, attendedR:0.49,attendedV:-0.21,conv:59, convV:-0.11,newSt:194,newStV:-0.0202,retSt:39,retStV:-0.547},
-  {l:"Tustin",                  r:"West",     rev:180206,revV:-0.0547,lsStart:165,lsStartV:-0.343,lsStop:125,lsStopV:-0.342,sched:145,schedV:-0.335,attendedR:0.61,attendedV:-0.09,conv:66, convV:-0.04,newSt:83, newStV:-0.546,retSt:59,retStV:-0.359},
-  {l:"Wilmette",                r:"Midwest",  rev:116751,revV:-0.041,lsStart:77, lsStartV:-0.330,lsStop:53, lsStopV:-0.321,sched:49, schedV:-0.387,attendedR:0.67,attendedV:-0.03,conv:67, convV:-0.03,newSt:31, newStV:-0.608,retSt:23,retStV:-0.521},
+const DATA=[
+  {l:"Allen",                  r:"South",     rev:146667,rev_t:167145, lsStart:173,lsStart_t:258, lsStop:76, lsStop_t:155, sched:145,sched_t:164, attended:67, attended_t:104, conv:81, conv_t:73,  newSt:81, newSt_t:183, retSt:51, retSt_t:103},
+  {l:"Atlanta - N. Druid Hills",r:"South",    rev:84336, rev_t:97469,  lsStart:111,lsStart_t:171, lsStop:35, lsStop_t:90,  sched:159,sched_t:164, attended:72, attended_t:104, conv:75, conv_t:73,  newSt:75, newSt_t:146, retSt:20, retSt_t:50},
+  {l:"Buffalo Grove",           r:"Midwest",  rev:153378,rev_t:147862, lsStart:121,lsStart_t:149, lsStop:64, lsStop_t:113, sched:54, sched_t:102, attended:38, attended_t:65,  conv:49, conv_t:46,  newSt:49, newSt_t:83,  retSt:44, retSt_t:74},
+  {l:"Chantilly",               r:"East",     rev:136999,rev_t:146944, lsStart:105,lsStart_t:158, lsStop:55, lsStop_t:115, sched:67, sched_t:104, attended:34, attended_t:66,  conv:37, conv_t:46,  newSt:37, newSt_t:90,  retSt:42, retSt_t:70},
+  {l:"Chicago - North Center",  r:"Midwest",  rev:239965,rev_t:255472, lsStart:226,lsStart_t:273, lsStop:121,lsStop_t:221, sched:174,sched_t:207, attended:96, attended_t:132, conv:115,conv_t:92,  newSt:115,newSt_t:142, retSt:66, retSt_t:128},
+  {l:"Dulles",                  r:"East",     rev:136710,rev_t:160007, lsStart:123,lsStart_t:151, lsStop:59, lsStop_t:95,  sched:75, sched_t:137, attended:48, attended_t:87,  conv:32, conv_t:61,  newSt:32, newSt_t:107, retSt:32, retSt_t:61},
+  {l:"Fairfax",                 r:"East",     rev:179726,rev_t:187786, lsStart:163,lsStart_t:179, lsStop:81, lsStop_t:122, sched:131,sched_t:135, attended:76, attended_t:86,  conv:76, conv_t:60,  newSt:76, newSt_t:124, retSt:57, retSt_t:63},
+  {l:"Falls Church",            r:"East",     rev:199836,rev_t:212870, lsStart:178,lsStart_t:200, lsStop:89, lsStop_t:154, sched:147,sched_t:153, attended:91, attended_t:97,  conv:82, conv_t:68,  newSt:82, newSt_t:114, retSt:62, retSt_t:88},
+  {l:"Frisco",                  r:"South",    rev:181585,rev_t:193782, lsStart:167,lsStart_t:260, lsStop:83, lsStop_t:189, sched:137,sched_t:185, attended:81, attended_t:118, conv:79, conv_t:82,  newSt:79, newSt_t:162, retSt:59, retSt_t:110},
+  {l:"Germantown",              r:"East",     rev:133958,rev_t:155881, lsStart:128,lsStart_t:220, lsStop:63, lsStop_t:133, sched:102,sched_t:168, attended:56, attended_t:107, conv:62, conv_t:75,  newSt:62, newSt_t:172, retSt:47, retSt_t:55},
+  {l:"Gilbert",                 r:"Southwest",rev:67908, rev_t:76189,  lsStart:91, lsStart_t:139, lsStop:41, lsStop_t:51,  sched:82, sched_t:135, attended:43, attended_t:86,  conv:51, conv_t:60,  newSt:51, newSt_t:110, retSt:31, retSt_t:39},
+  {l:"Hoffman Estates",         r:"Midwest",  rev:94121, rev_t:105253, lsStart:124,lsStart_t:146, lsStop:47, lsStop_t:108, sched:58, sched_t:98,  attended:39, attended_t:62,  conv:41, conv_t:44,  newSt:41, newSt_t:107, retSt:47, retSt_t:59},
+  {l:"Huntington Beach",        r:"West",     rev:179770,rev_t:189865, lsStart:127,lsStart_t:224, lsStop:87, lsStop_t:151, sched:119,sched_t:175, attended:77, attended_t:111, conv:59, conv_t:78,  newSt:59, newSt_t:153, retSt:35, retSt_t:84},
+  {l:"Johns Creek",             r:"South",    rev:148803,rev_t:177398, lsStart:134,lsStart_t:251, lsStop:74, lsStop_t:132, sched:117,sched_t:188, attended:47, attended_t:120, conv:39, conv_t:84,  newSt:39, newSt_t:151, retSt:57, retSt_t:113},
+  {l:"Lakewood",                r:"West",     rev:194163,rev_t:186702, lsStart:314,lsStart_t:262, lsStop:135,lsStop_t:210, sched:495,sched_t:197, attended:218,attended_t:125, conv:197,conv_t:88,  newSt:197,newSt_t:198, retSt:44, retSt_t:80},
+  {l:"Niles",                   r:"Midwest",  rev:114221,rev_t:127086, lsStart:102,lsStart_t:148, lsStop:48, lsStop_t:75,  sched:44, sched_t:111, attended:27, attended_t:71,  conv:44, conv_t:49,  newSt:44, newSt_t:97,  retSt:39, retSt_t:61},
+  {l:"Plano",                   r:"South",    rev:90915, rev_t:106229, lsStart:127,lsStart_t:193, lsStop:68, lsStop_t:90,  sched:94, sched_t:137, attended:41, attended_t:87,  conv:52, conv_t:61,  newSt:52, newSt_t:136, retSt:33, retSt_t:79},
+  {l:"San Diego - Point Loma",  r:"West",     rev:157741,rev_t:173840, lsStart:167,lsStart_t:235, lsStop:65, lsStop_t:140, sched:163,sched_t:197, attended:88, attended_t:125, conv:85, conv_t:88,  newSt:85, newSt_t:161, retSt:40, retSt_t:74},
+  {l:"Springfield",             r:"East",     rev:234203,rev_t:264488, lsStart:197,lsStart_t:282, lsStop:114,lsStop_t:183, sched:142,sched_t:196, attended:85, attended_t:125, conv:85, conv_t:87,  newSt:85, newSt_t:194, retSt:64, retSt_t:98},
+  {l:"Torrance",                r:"West",     rev:240065,rev_t:216294, lsStart:273,lsStart_t:265, lsStop:100,lsStop_t:226, sched:392,sched_t:207, attended:192,attended_t:132, conv:194,conv_t:92,  newSt:194,newSt_t:198, retSt:39, retSt_t:86},
+  {l:"Tustin",                  r:"West",     rev:180206,rev_t:190635, lsStart:165,lsStart_t:251, lsStop:125,lsStop_t:190, sched:145,sched_t:218, attended:88, attended_t:139, conv:83, conv_t:97,  newSt:83, newSt_t:183, retSt:59, retSt_t:92},
+  {l:"Wilmette",                r:"Midwest",  rev:116751,rev_t:121747, lsStart:77, lsStart_t:115, lsStop:53, lsStop_t:78,  sched:49, sched_t:80,  attended:33, attended_t:51,  conv:31, conv_t:36,  newSt:31, newSt_t:79,  retSt:23, retSt_t:48},
 ];
-function calcKpi(val,variance,lowerIsBetter){
-  const target=val/(1+variance);
-  const gap=lowerIsBetter?val-target:target-val;
-  const pct=lowerIsBetter?Math.round((target/val)*100):Math.round((val/target)*100);
-  const daily=gap>0?gap/DAYS_LEFT:0;
-  const weekly=gap>0?gap/WEEKS_LEFT:0;
-  return{val,target,gap,pct,daily,weekly,lowerIsBetter};
-}
 const FIELDS=[
-  {id:'rev',      label:'Revenue',         isRev:true, lowerIsBetter:false},
-  {id:'sched',    label:'Trials Scheduled',            lowerIsBetter:false},
-  {id:'attended', label:'Trials Attended',             lowerIsBetter:false},
-  {id:'conv',     label:'Trials Converted',            lowerIsBetter:false},
-  {id:'newSt',    label:'New Students',                lowerIsBetter:false},
-  {id:'retSt',    label:'Return Students',             lowerIsBetter:false},
-  {id:'lsStart',  label:'Lessons Started',             lowerIsBetter:false},
-  {id:'lsStop',   label:'Lessons Stopped',             lowerIsBetter:true },
+  {id:'rev',      label:'Revenue',          ak:'rev',      tk:'rev_t',      isRev:true,  lib:false},
+  {id:'sched',    label:'Trials Scheduled', ak:'sched',    tk:'sched_t',               lib:false},
+  {id:'attended', label:'Trials Attended',  ak:'attended', tk:'attended_t',            lib:false},
+  {id:'conv',     label:'Trials Converted', ak:'conv',     tk:'conv_t',                lib:false},
+  {id:'newSt',    label:'New Students',     ak:'newSt',    tk:'newSt_t',               lib:false},
+  {id:'retSt',    label:'Return Students',  ak:'retSt',    tk:'retSt_t',               lib:false},
+  {id:'lsStart',  label:'Lessons Started',  ak:'lsStart',  tk:'lsStart_t',             lib:false},
+  {id:'lsStop',   label:'Lessons Stopped',  ak:'lsStop',   tk:'lsStop_t',              lib:true },
 ];
-const VARMAP={rev:'revV',sched:'schedV',attended:'attendedV',conv:'convV',newSt:'newStV',retSt:'retStV',lsStart:'lsStartV',lsStop:'lsStopV'};
-const DATA=RAW.map(d=>{
-  const attendedCount=Math.round(d.sched*d.attendedR);
-  const full={...d,attended:attendedCount};
-  const kpis={};
-  FIELDS.forEach(f=>{
-    const val=f.id==='attended'?attendedCount:full[f.id];
-    const variance=f.id==='attended'?d.attendedV:full[VARMAP[f.id]];
-    kpis[f.id]=calcKpi(val,variance,f.lowerIsBetter);
-  });
-  return{...full,attended:attendedCount,kpis};
-});
+function kpiStats(d,f){const val=d[f.ak],tgt=d[f.tk];const gap=f.lib?val-tgt:tgt-val;const pct=f.lib?Math.round((tgt/val)*100):Math.round((val/tgt)*100);const daily=gap>0?gap/DAYS_LEFT:0;const weekly=gap>0?gap/WEEKS_LEFT:0;return{val,tgt,gap,pct,daily,weekly};}
 const REGIONS=['South','East','Midwest','Southwest','West'];
 const RCOLORS={South:'#0057FF',East:'#047857',Midwest:'#7C3AED',Southwest:'#B45309',West:'#B91C1C'};
-function fmt(val,field){if(!field)return Math.round(val).toLocaleString();if(field.isRev)return'$'+Math.round(val).toLocaleString();return Math.round(val).toLocaleString();}
-function varCls(v,inv){const r=inv?-v:v;return r>0?'pos':r<0?'neg':'neu';}
-function varLbl(v){return(v>=0?'+':'')+Math.round(v*100)+'%';}
+function fmtV(val,f){return f?.isRev?'$'+Math.round(val).toLocaleString():Math.round(val).toLocaleString();}
+function varCls(v,lib){const r=lib?-v:v;return r>0?'pos':r<0?'neg':'neu';}
+function varLblFromActTgt(val,tgt){const v=(val-tgt)/tgt;return(v>=0?'+':'')+Math.round(v*100)+'%';}
 function fillCls(p){return p>=100?'fill-blue':'fill-red';}
 function badge(p){return p>=100?'<span class="badge up">On Track</span>':'<span class="badge off">Behind</span>';}
 let activeKpi='rev',activeFilter='all',activeView='locations';
-function setView(v,btn){
-  activeView=v;
-  document.querySelectorAll('.vt-btn').forEach(b=>b.classList.remove('active'));
-  btn.classList.add('active');
-  document.getElementById('region-view').style.display=v==='region'?'':'none';
-  document.getElementById('location-view').style.display=v==='locations'?'':'none';
-  if(v==='region')renderRegions();
-}
-function setFilter(f,btn){
-  activeFilter=f;
-  document.querySelectorAll('.fb').forEach(b=>b.classList.remove('active'));
-  btn.classList.add('active');
-  render();
-}
-function setKpi(id){
-  activeKpi=id;
-  document.querySelectorAll('.kt').forEach(b=>b.classList.toggle('active',b.dataset.id===id));
-  render();
-}
-function buildSummary(){
-  const tr=DATA.reduce((s,d)=>s+d.rev,0);
-  const tt=DATA.reduce((s,d)=>s+d.kpis.rev.target,0);
-  const tg=tt-tr;
-  const on=DATA.filter(d=>d.kpis.rev.pct>=100).length;
-  const op=Math.round((tr/tt)*100);
-  document.getElementById('summary').innerHTML=`
-    <div class="sc accent"><div class="sc-label">Total Revenue</div><div class="sc-val">$${Math.round(tr/1000)}K</div><div class="sc-sub">${op}% of target</div></div>
-    <div class="sc"><div class="sc-label">Revenue Target</div><div class="sc-val">$${Math.round(tt/1000)}K</div><div class="sc-sub">${DATA.length} locations</div></div>
-    <div class="sc"><div class="sc-label">Rev Gap</div><div class="sc-val" style="color:var(--red)">$${Math.round(tg/1000)}K</div><div class="sc-sub">${DAYS_LEFT} days left</div></div>
-    <div class="sc"><div class="sc-label">On Track</div><div class="sc-val" style="color:var(--green)">${on}</div><div class="sc-sub">${DATA.length-on} behind target</div></div>
-    <div class="sc"><div class="sc-label">New Students</div><div class="sc-val">${DATA.reduce((s,d)=>s+d.newSt,0)}</div><div class="sc-sub">tgt: ${DATA.reduce((s,d)=>s+Math.round(d.kpis.newSt.target),0)}</div></div>
-    <div class="sc"><div class="sc-label">Trials Attended</div><div class="sc-val">${DATA.reduce((s,d)=>s+d.attended,0).toLocaleString()}</div><div class="sc-sub">tgt: ${DATA.reduce((s,d)=>s+Math.round(d.kpis.attended.target),0).toLocaleString()}</div></div>
-  `;
-  document.getElementById('banner-extra').innerHTML=`<b>$${Math.round(tg/1000)}K</b><span> total gap · </span><b>$${Math.round(tg/DAYS_LEFT/100)*100}/day</b><span> needed</span>`;
-}
-function renderRegions(){
-  const html=REGIONS.map(region=>{
-    const locs=DATA.filter(d=>d.r===region);
-    if(!locs.length)return'';
-    const tr=locs.reduce((s,d)=>s+d.rev,0);
-    const tt=locs.reduce((s,d)=>s+d.kpis.rev.target,0);
-    const tg=tt-tr;
-    const pct=Math.round((tr/tt)*100);
-    const on=locs.filter(d=>d.kpis.rev.pct>=100).length;
-    const daily=tg>0?Math.ceil(tg/DAYS_LEFT):0;
-    const weekly=tg>0?Math.ceil(tg/WEEKS_LEFT):0;
-    const tns=locs.reduce((s,d)=>s+d.newSt,0);
-    const tnsT=locs.reduce((s,d)=>s+Math.round(d.kpis.newSt.target),0);
-    const ta=locs.reduce((s,d)=>s+d.attended,0);
-    const taT=locs.reduce((s,d)=>s+Math.round(d.kpis.attended.target),0);
-    const ls=locs.reduce((s,d)=>s+d.lsStart,0);
-    const lsT=locs.reduce((s,d)=>s+Math.round(d.kpis.lsStart.target),0);
-    const color=RCOLORS[region];
-    return `<div class="rc">
-      <div class="rc-head" style="border-left:4px solid ${color};">
-        <div><div class="rc-name">${region}</div><div class="rc-meta">${locs.length} locations · ${on} on track · ${locs.length-on} behind</div></div>
-        <div style="text-align:right;"><div style="font-size:18px;font-weight:600;font-family:'DM Mono',monospace;">$${Math.round(tr/1000)}K</div><div style="font-size:11px;color:var(--text-2);">${pct}% of $${Math.round(tt/1000)}K target</div></div>
-      </div>
-      <div class="rc-pbar-wrap"><div class="rc-pbar-fill" style="width:${Math.min(100,pct)}%;background:${pct>=100?'var(--green)':'var(--red)'}"></div></div>
-      <div class="rc-stats">
-        <div class="rc-stat"><div class="rc-stat-label">Rev Gap</div><div class="rc-stat-val" style="color:${tg>0?'var(--red)':'var(--green)'}">$${Math.round(Math.abs(tg)/1000)}K</div><div class="rc-stat-sub ${tg>0?'red':'green'}">${tg>0?'behind':'ahead'}</div></div>
-        <div class="rc-stat"><div class="rc-stat-label">Need / Day</div><div class="rc-stat-val" style="color:${daily>0?'var(--red)':'var(--green)'}">$${daily>0?Math.round(daily/100)*100:0}</div><div class="rc-stat-sub ${daily>0?'red':'green'}">${DAYS_LEFT} days left</div></div>
-        <div class="rc-stat"><div class="rc-stat-label">Need / Week</div><div class="rc-stat-val" style="color:${weekly>0?'var(--red)':'var(--green)'}">$${weekly>0?Math.round(weekly/100)*100:0}</div><div class="rc-stat-sub ${weekly>0?'red':'green'}">${Math.round(WEEKS_LEFT*10)/10} wks left</div></div>
-        <div class="rc-stat"><div class="rc-stat-label">New Students</div><div class="rc-stat-val">${tns}</div><div class="rc-stat-sub ${tns>=tnsT?'green':'red'}">tgt: ${tnsT}</div></div>
-        <div class="rc-stat"><div class="rc-stat-label">Trials Attended</div><div class="rc-stat-val">${ta}</div><div class="rc-stat-sub ${ta>=taT?'green':'red'}">tgt: ${taT}</div></div>
-        <div class="rc-stat"><div class="rc-stat-label">Lessons Started</div><div class="rc-stat-val">${ls}</div><div class="rc-stat-sub ${ls>=lsT?'green':'red'}">tgt: ${lsT}</div></div>
-      </div>
-      <div class="rc-locations">${locs.map(d=>d.l).join(', ')}</div>
-    </div>`;
-  }).join('');
-  document.getElementById('region-grid').innerHTML=html;
-}
-function buildTabs(){
-  document.getElementById('kpi-tabs').innerHTML=FIELDS.map(f=>`<button class="kt${f.id===activeKpi?' active':''}" data-id="${f.id}" onclick="setKpi('${f.id}')">${f.label}</button>`).join('');
-}
-function renderTargetBoxes(k,field){
-  const met=k.gap<=0;
-  const gL=field.lowerIsBetter?'Over by':'Gap';
-  const dL=field.lowerIsBetter?'Reduce/Day':'Per Day';
-  const wL=field.lowerIsBetter?'Reduce/Wk':'Per Week';
-  return `<div class="targets cols4">
-    <div class="tbox"><div class="tbox-lbl">${gL}</div><div class="tbox-val ${met?'green':'red'}">${met?(field.lowerIsBetter?'✓ Good':'Met!'):fmt(k.gap,field)}</div></div>
-    <div class="tbox"><div class="tbox-lbl">${dL}</div><div class="tbox-val ${met?'green':'red'}">${met?'✓':fmt(k.daily,field)}</div></div>
-    <div class="tbox"><div class="tbox-lbl">${wL}</div><div class="tbox-val ${met?'green':'red'}">${met?'✓':fmt(k.weekly,field)}</div></div>
-    <div class="tbox"><div class="tbox-lbl">Target</div><div class="tbox-val">${fmt(k.target,field)}</div></div>
-  </div>`;
-}
-function render(){
-  const q=document.getElementById('search').value.toLowerCase();
-  const sort=document.getElementById('sort-sel').value;
-  const region=document.getElementById('region-sel').value;
-  const activeField=FIELDS.find(f=>f.id===activeKpi);
-  let list=DATA.filter(d=>d.l.toLowerCase().includes(q));
-  if(region!=='all')list=list.filter(d=>d.r===region);
-  if(activeFilter==='behind')list=list.filter(d=>d.kpis.rev.pct<100);
-  if(activeFilter==='ontrack')list=list.filter(d=>d.kpis.rev.pct>=100);
-  if(sort==='name')list.sort((a,b)=>a.l.localeCompare(b.l));
-  if(sort==='gap')list.sort((a,b)=>b.kpis.rev.gap-a.kpis.rev.gap);
-  if(sort==='pct')list.sort((a,b)=>a.kpis.rev.pct-b.kpis.rev.pct);
-  if(sort==='daily')list.sort((a,b)=>b.kpis.rev.daily-a.kpis.rev.daily);
-  if(!list.length){document.getElementById('grid').innerHTML='<div class="no-results">No locations match.</div>';return;}
-  document.getElementById('grid').innerHTML=list.map(d=>{
-    const pk=d.kpis[activeKpi];
-    const fp=Math.min(100,pk.pct);
-    const v=activeKpi==='attended'?d.attendedV:d[VARMAP[activeKpi]];
-    const pVarCls=varCls(v,activeField.lowerIsBetter);
-    const otherRows=FIELDS.filter(f=>f.id!==activeKpi).map(f=>{
-      const k=d.kpis[f.id];
-      const fv=f.id==='attended'?d.attendedV:d[VARMAP[f.id]];
-      const met=k.gap<=0;
-      const gL=f.lowerIsBetter?'Over':'Gap';
-      const dL=f.lowerIsBetter?'-/Day':'/Day';
-      const wL=f.lowerIsBetter?'-/Wk':'/Wk';
-      return `<div class="kr">
-        <div class="kr-left">
-          <div class="kr-name">${f.label}${f.lowerIsBetter?' <span style="font-size:9px;opacity:.6">(lower=better)</span>':''}</div>
-          <div class="kr-vals"><span class="kr-val">${fmt(k.val,f)}</span><span class="var-tag ${varCls(fv,f.lowerIsBetter)}">${varLbl(fv)}</span><span style="font-size:10px;color:var(--text-3)">/ tgt ${fmt(k.target,f)}</span></div>
-        </div>
-        <div class="kr-targets">
-          <div class="kr-tbox"><span class="kr-tbox-lbl">${gL}</span><span class="kr-tbox-val ${met?'green':'red'}">${met?'✓':fmt(k.gap,f)}</span></div>
-          <div class="kr-tbox"><span class="kr-tbox-lbl">${dL}</span><span class="kr-tbox-val ${met?'green':'red'}">${met?'✓':fmt(k.daily,f)}</span></div>
-          <div class="kr-tbox"><span class="kr-tbox-lbl">${wL}</span><span class="kr-tbox-val ${met?'green':'red'}">${met?'✓':fmt(k.weekly,f)}</span></div>
-        </div>
-      </div>`;
-    }).join('');
-    return `<div class="lc">
-      <div class="lc-head">
-        <div class="lc-name">${d.l}</div>
-        <div style="display:flex;gap:5px;align-items:center;">
-          <span style="font-size:10px;color:var(--text-3);background:var(--bg);padding:2px 6px;border-radius:4px;">${d.r}</span>
-          ${badge(d.kpis.rev.pct)}
-        </div>
-      </div>
-      <div class="lc-primary">
-        <div class="prog-top"><span class="prog-val">${fmt(pk.val,activeField)}</span><span class="prog-tgt">target: ${fmt(pk.target,activeField)}</span></div>
-        <div class="pbar-wrap"><div class="pbar-fill ${fillCls(fp)}" style="width:${fp}%"></div></div>
-        <div class="prog-meta"><span>${fp}% of target</span><span class="var-tag ${pVarCls}">${varLbl(v)}</span></div>
-        ${renderTargetBoxes(pk,activeField)}
-      </div>
-      <div class="kpi-rows"><div class="kr-section-label">All KPIs — Gap · Per Day · Per Week</div>${otherRows}</div>
-    </div>`;
-  }).join('');
-}
+function setView(v,btn){activeView=v;document.querySelectorAll('.vt-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');document.getElementById('region-view').style.display=v==='region'?'':'none';document.getElementById('location-view').style.display=v==='locations'?'':'none';if(v==='region')renderRegions();}
+function setFilter(f,btn){activeFilter=f;document.querySelectorAll('.fb').forEach(b=>b.classList.remove('active'));btn.classList.add('active');render();}
+function setKpi(id){activeKpi=id;document.querySelectorAll('.kt').forEach(b=>b.classList.toggle('active',b.dataset.id===id));render();}
+function revPct(d){return Math.round((d.rev/d.rev_t)*100);}
+function buildSummary(){const tr=DATA.reduce((s,d)=>s+d.rev,0);const tt=DATA.reduce((s,d)=>s+d.rev_t,0);const tg=tt-tr;const on=DATA.filter(d=>revPct(d)>=100).length;const op=Math.round((tr/tt)*100);document.getElementById('summary').innerHTML=`<div class="sc accent"><div class="sc-label">Total Revenue</div><div class="sc-val">$${Math.round(tr/1000)}K</div><div class="sc-sub">${op}% of target</div></div><div class="sc"><div class="sc-label">Revenue Target</div><div class="sc-val">$${Math.round(tt/1000)}K</div><div class="sc-sub">${DATA.length} locations</div></div><div class="sc"><div class="sc-label">Rev Gap</div><div class="sc-val" style="color:var(--red)">$${Math.round(tg/1000)}K</div><div class="sc-sub">${DAYS_LEFT} days left</div></div><div class="sc"><div class="sc-label">On Track</div><div class="sc-val" style="color:var(--green)">${on}</div><div class="sc-sub">${DATA.length-on} behind target</div></div><div class="sc"><div class="sc-label">New Students</div><div class="sc-val">${DATA.reduce((s,d)=>s+d.newSt,0)}</div><div class="sc-sub">tgt: ${DATA.reduce((s,d)=>s+d.newSt_t,0)}</div></div><div class="sc"><div class="sc-label">Trials Attended</div><div class="sc-val">${DATA.reduce((s,d)=>s+d.attended,0).toLocaleString()}</div><div class="sc-sub">tgt: ${DATA.reduce((s,d)=>s+d.attended_t,0).toLocaleString()}</div></div>`;document.getElementById('banner-extra').innerHTML=`<b>$${Math.round(tg/1000)}K</b><span> total gap · </span><b>$${Math.round(tg/DAYS_LEFT/100)*100}/day</b><span> needed</span>`;}
+function renderRegions(){document.getElementById('region-grid').innerHTML=REGIONS.map(region=>{const locs=DATA.filter(d=>d.r===region);if(!locs.length)return'';const tr=locs.reduce((s,d)=>s+d.rev,0);const tt=locs.reduce((s,d)=>s+d.rev_t,0);const tg=tt-tr;const pct=Math.round((tr/tt)*100);const on=locs.filter(d=>revPct(d)>=100).length;const daily=tg>0?Math.ceil(tg/DAYS_LEFT):0;const weekly=tg>0?Math.ceil(tg/WEEKS_LEFT):0;const tns=locs.reduce((s,d)=>s+d.newSt,0),tnsT=locs.reduce((s,d)=>s+d.newSt_t,0);const ta=locs.reduce((s,d)=>s+d.attended,0),taT=locs.reduce((s,d)=>s+d.attended_t,0);const ls=locs.reduce((s,d)=>s+d.lsStart,0),lsT=locs.reduce((s,d)=>s+d.lsStart_t,0);const color=RCOLORS[region];return `<div class="rc"><div class="rc-head" style="border-left:4px solid ${color};"><div><div class="rc-name">${region}</div><div class="rc-meta">${locs.length} locations · ${on} on track · ${locs.length-on} behind</div></div><div style="text-align:right;"><div style="font-size:18px;font-weight:600;font-family:'DM Mono',monospace;">$${Math.round(tr/1000)}K</div><div style="font-size:11px;color:var(--text-2);">${pct}% of $${Math.round(tt/1000)}K target</div></div></div><div class="rc-pbar-wrap"><div class="rc-pbar-fill" style="width:${Math.min(100,pct)}%;background:${pct>=100?'var(--green)':'var(--red)'}"></div></div><div class="rc-stats"><div class="rc-stat"><div class="rc-stat-label">Rev Gap</div><div class="rc-stat-val" style="color:${tg>0?'var(--red)':'var(--green)'}">$${Math.round(Math.abs(tg)/1000)}K</div><div class="rc-stat-sub ${tg>0?'red':'green'}">${tg>0?'behind':'ahead'}</div></div><div class="rc-stat"><div class="rc-stat-label">Need / Day</div><div class="rc-stat-val" style="color:${daily>0?'var(--red)':'var(--green)'}">$${daily>0?Math.round(daily/100)*100:0}</div><div class="rc-stat-sub ${daily>0?'red':'green'}">${DAYS_LEFT} days left</div></div><div class="rc-stat"><div class="rc-stat-label">Need / Week</div><div class="rc-stat-val" style="color:${weekly>0?'var(--red)':'var(--green)'}">$${weekly>0?Math.round(weekly/100)*100:0}</div><div class="rc-stat-sub ${weekly>0?'red':'green'}">${Math.round(WEEKS_LEFT*10)/10} wks left</div></div><div class="rc-stat"><div class="rc-stat-label">New Students</div><div class="rc-stat-val">${tns}</div><div class="rc-stat-sub ${tns>=tnsT?'green':'red'}">tgt: ${tnsT}</div></div><div class="rc-stat"><div class="rc-stat-label">Trials Attended</div><div class="rc-stat-val">${ta}</div><div class="rc-stat-sub ${ta>=taT?'green':'red'}">tgt: ${taT}</div></div><div class="rc-stat"><div class="rc-stat-label">Lessons Started</div><div class="rc-stat-val">${ls}</div><div class="rc-stat-sub ${ls>=lsT?'green':'red'}">tgt: ${lsT}</div></div></div><div class="rc-locations">${locs.map(d=>d.l).join(', ')}</div></div>`;}).join('');}
+function buildTabs(){document.getElementById('kpi-tabs').innerHTML=FIELDS.map(f=>`<button class="kt${f.id===activeKpi?' active':''}" data-id="${f.id}" onclick="setKpi('${f.id}')">${f.label}</button>`).join('');}
+function renderTargetBoxes(k,f){const met=k.gap<=0;const gL=f.lib?'Over by':'Gap';const dL=f.lib?'Reduce/Day':'Per Day';const wL=f.lib?'Reduce/Wk':'Per Week';return `<div class="targets cols4"><div class="tbox"><div class="tbox-lbl">${gL}</div><div class="tbox-val ${met?'green':'red'}">${met?(f.lib?'✓ Good':'Met!'):fmtV(k.gap,f)}</div></div><div class="tbox"><div class="tbox-lbl">${dL}</div><div class="tbox-val ${met?'green':'red'}">${met?'✓':fmtV(k.daily,f)}</div></div><div class="tbox"><div class="tbox-lbl">${wL}</div><div class="tbox-val ${met?'green':'red'}">${met?'✓':fmtV(k.weekly,f)}</div></div><div class="tbox"><div class="tbox-lbl">Target</div><div class="tbox-val">${fmtV(k.tgt,f)}</div></div></div>`;}
+function render(){const q=document.getElementById('search').value.toLowerCase();const sort=document.getElementById('sort-sel').value;const region=document.getElementById('region-sel').value;const af=FIELDS.find(f=>f.id===activeKpi);let list=DATA.filter(d=>d.l.toLowerCase().includes(q));if(region!=='all')list=list.filter(d=>d.r===region);if(activeFilter==='behind')list=list.filter(d=>revPct(d)<100);if(activeFilter==='ontrack')list=list.filter(d=>revPct(d)>=100);const revK=d=>kpiStats(d,FIELDS[0]);if(sort==='name')list.sort((a,b)=>a.l.localeCompare(b.l));if(sort==='gap')list.sort((a,b)=>revK(b).gap-revK(a).gap);if(sort==='pct')list.sort((a,b)=>revPct(a)-revPct(b));if(sort==='daily')list.sort((a,b)=>revK(b).daily-revK(a).daily);if(!list.length){document.getElementById('grid').innerHTML='<div class="no-results">No locations match.</div>';return;}document.getElementById('grid').innerHTML=list.map(d=>{const pk=kpiStats(d,af);const fp=Math.min(100,pk.pct);const rp=revPct(d);const vLbl=varLblFromActTgt(d[af.ak],d[af.tk]);const vCls=varCls(d[af.ak]-d[af.tk],af.lib);const otherRows=FIELDS.filter(f=>f.id!==activeKpi).map(f=>{const k=kpiStats(d,f);const met=k.gap<=0;const fv=varLblFromActTgt(d[f.ak],d[f.tk]);const fc=varCls(d[f.ak]-d[f.tk],f.lib);const gL=f.lib?'Over':'Gap';const dL=f.lib?'-/Day':'/Day';const wL=f.lib?'-/Wk':'/Wk';return `<div class="kr"><div class="kr-left"><div class="kr-name">${f.label}${f.lib?' <span style="font-size:9px;opacity:.6">(lower=better)</span>':''}</div><div class="kr-vals"><span class="kr-val">${fmtV(k.val,f)}</span><span class="var-tag ${fc}">${fv}</span><span style="font-size:10px;color:var(--text-3)">/ tgt ${fmtV(k.tgt,f)}</span></div></div><div class="kr-targets"><div class="kr-tbox"><span class="kr-tbox-lbl">${gL}</span><span class="kr-tbox-val ${met?'green':'red'}">${met?'✓':fmtV(k.gap,f)}</span></div><div class="kr-tbox"><span class="kr-tbox-lbl">${dL}</span><span class="kr-tbox-val ${met?'green':'red'}">${met?'✓':fmtV(k.daily,f)}</span></div><div class="kr-tbox"><span class="kr-tbox-lbl">${wL}</span><span class="kr-tbox-val ${met?'green':'red'}">${met?'✓':fmtV(k.weekly,f)}</span></div></div></div>`;}).join('');return `<div class="lc"><div class="lc-head"><div class="lc-name">${d.l}</div><div style="display:flex;gap:5px;align-items:center;"><span style="font-size:10px;color:var(--text-3);background:var(--bg);padding:2px 6px;border-radius:4px;">${d.r}</span>${badge(rp)}</div></div><div class="lc-primary"><div class="prog-top"><span class="prog-val">${fmtV(pk.val,af)}</span><span class="prog-tgt">target: ${fmtV(pk.tgt,af)}</span></div><div class="pbar-wrap"><div class="pbar-fill ${fillCls(fp)}" style="width:${fp}%"></div></div><div class="prog-meta"><span>${fp}% of target</span><span class="var-tag ${vCls}">${vLbl}</span></div>${renderTargetBoxes(pk,af)}</div><div class="kpi-rows"><div class="kr-section-label">All KPIs — Gap · Per Day · Per Week</div>${otherRows}</div></div>`;}).join('');}
 buildSummary();
 buildTabs();
 render();
