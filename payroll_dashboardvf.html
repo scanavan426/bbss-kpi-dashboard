@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>All Hourly Payroll Dashboard 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#0d0f14; --surface:#151820; --surface2:#1c2030;
+  --border:#252a38; --border2:#2e3448;
+  --text:#e8eaf2; --muted:#7a80a0;
+  --accent:#4f8ef7; --accent2:#6ee7b7;
+  --warn:#f59e42; --danger:#f46060; --success:#4ade80;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;min-height:100vh;}
+
+/* HEADER */
+.hdr{background:var(--surface);border-bottom:1px solid var(--border);padding:18px 32px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
+.hdr-l{display:flex;align-items:center;gap:16px;}
+.logo{width:10px;height:32px;background:var(--accent);border-radius:2px;}
+.h1{font-size:15px;font-weight:600;letter-spacing:.02em;}
+.hsub{font-size:12px;color:var(--muted);font-family:'DM Mono',monospace;margin-top:2px;}
+.hdr-r{display:flex;align-items:center;gap:20px;}
+.rbadge{display:flex;align-items:center;gap:6px;background:var(--surface2);border:1px solid var(--border2);padding:6px 12px;border-radius:6px;font-size:12px;color:var(--muted);font-family:'DM Mono',monospace;}
+.dot{width:7px;height:7px;background:var(--success);border-radius:50%;animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.mlabel{background:var(--accent);color:#fff;font-size:12px;font-weight:600;padding:6px 14px;border-radius:6px;letter-spacing:.04em;}
+
+/* MAIN */
+.main{padding:28px 32px;max-width:1600px;margin:0 auto;}
+
+/* CARDS */
+.sgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:28px;}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:18px 20px;}
+.clbl{font-size:11px;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;margin-bottom:8px;}
+.cval{font-size:26px;font-weight:600;font-family:'DM Mono',monospace;}
+.cval.good{color:var(--success);} .cval.warn{color:var(--warn);} .cval.bad{color:var(--danger);}
+.csub{font-size:11px;color:var(--muted);margin-top:4px;font-family:'DM Mono',monospace;}
+
+/* SECTION */
+.shdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;margin-top:32px;}
+.stitle{font-size:13px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;}
+.snote{font-size:11px;color:var(--muted);font-family:'DM Mono',monospace;}
+
+/* REGION CARDS */
+.rgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px;}
+.rcard{background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden;}
+.rhdr{padding:14px 18px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);}
+.rname{font-size:13px;font-weight:600;letter-spacing:.03em;}
+.rbg{font-size:10px;padding:3px 8px;border-radius:4px;font-family:'DM Mono',monospace;font-weight:500;}
+.rmets{padding:14px 18px;display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.mlbl{font-size:10px;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;margin-bottom:4px;}
+.mval{font-size:18px;font-weight:600;font-family:'DM Mono',monospace;}
+.mval.good{color:var(--success);} .mval.warn{color:var(--warn);} .mval.bad{color:var(--danger);}
+.msub{font-size:10px;color:var(--muted);font-family:'DM Mono',monospace;}
+.pbar{height:4px;background:var(--border2);border-radius:2px;margin:0 18px 14px;overflow:hidden;}
+.pfill{height:100%;border-radius:2px;transition:width .6s;}
+
+/* TABLE */
+.twrap{background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden;}
+.fbar{padding:14px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
+.fbtn{padding:5px 12px;border-radius:5px;font-size:12px;font-weight:500;cursor:pointer;border:1px solid var(--border2);background:transparent;color:var(--muted);transition:all .15s;font-family:'DM Sans',sans-serif;}
+.fbtn:hover{border-color:var(--accent);color:var(--accent);}
+.fsep{width:1px;height:18px;background:var(--border2);}
+table{width:100%;border-collapse:collapse;}
+thead th{padding:10px 14px;text-align:left;font-size:10px;color:var(--muted);font-weight:600;letter-spacing:.08em;text-transform:uppercase;border-bottom:1px solid var(--border);background:var(--surface);cursor:pointer;user-select:none;white-space:nowrap;}
+thead th:hover{color:var(--accent);}
+thead th.num{text-align:right;}
+tbody tr{border-bottom:1px solid var(--border);transition:background .1s;}
+tbody tr:last-child{border-bottom:none;}
+tbody tr:hover{background:var(--surface2);}
+tbody td{padding:10px 14px;font-size:13px;}
+tbody td.num{text-align:right;font-family:'DM Mono',monospace;font-size:12px;}
+.rdot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:7px;vertical-align:middle;}
+.pcell{display:flex;align-items:center;justify-content:flex-end;}
+.pill{padding:2px 8px;border-radius:4px;font-family:'DM Mono',monospace;font-size:11px;font-weight:500;}
+.pill.good{background:rgba(74,222,128,.12);color:var(--success);}
+.pill.warn{background:rgba(245,158,66,.12);color:var(--warn);}
+.pill.bad{background:rgba(244,96,96,.12);color:var(--danger);}
+.nd{color:var(--muted);font-family:'DM Mono',monospace;font-size:11px;}
+.sarr{margin-left:4px;opacity:.5;}
+.sarr.on{opacity:1;color:var(--accent);}
+
+/* CONFIG */
+.cpanel{margin-top:40px;background:var(--surface);border:1px solid var(--border2);border-radius:10px;overflow:hidden;}
+.chdr{padding:14px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;cursor:pointer;}
+.ctitle{font-size:12px;font-weight:600;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;}
+.ctog{font-size:11px;color:var(--accent);font-family:'DM Mono',monospace;}
+.cbody{padding:20px 18px;display:none;}
+.cbody.open{display:block;}
+.cinstr{font-size:12px;color:var(--muted);margin-bottom:16px;line-height:1.6;}
+.cinstr code{background:var(--surface2);padding:1px 5px;border-radius:3px;font-family:'DM Mono',monospace;color:var(--accent2);font-size:11px;}
+.clbl2{font-size:11px;color:var(--muted);font-family:'DM Mono',monospace;margin-bottom:4px;}
+.parea{width:100%;background:var(--surface2);border:1px solid var(--border2);color:var(--text);padding:10px;border-radius:5px;font-family:'DM Mono',monospace;font-size:11px;outline:none;min-height:120px;resize:vertical;transition:border .15s;}
+.parea:focus{border-color:var(--accent);}
+.abtn{margin-top:16px;background:var(--accent);color:#fff;border:none;padding:9px 20px;border-radius:6px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;cursor:pointer;transition:opacity .15s;}
+.abtn:hover{opacity:.85;}
+.pstat{font-size:11px;margin-top:6px;font-family:'DM Mono',monospace;}
+.pstat.ok{color:var(--success);} .pstat.err{color:var(--danger);}
+.footnote{margin-top:20px;font-size:11px;color:var(--muted);font-family:'DM Mono',monospace;padding-bottom:40px;}
+.footnote span{color:var(--accent2);}
+</style>
+</head>
+<body>
+
+<div class="hdr">
+  <div class="hdr-l">
+    <div class="logo"></div>
+    <div>
+      <div class="h1">All Hourly Payroll Dashboard</div>
+      <div class="hsub" id="headerSub">Loading...</div>
+    </div>
+  </div>
+  <div class="hdr-r">
+    <div class="rbadge"><div class="dot"></div><span id="lastRefresh">—</span></div>
+    <div class="mlabel" id="monthLabel">—</div>
+  </div>
+</div>
+
+<div class="main">
+  <div class="sgrid" id="summaryCards"></div>
+
+  <div class="shdr">
+    <div class="stitle">Region Summary</div>
+    <div class="snote" id="benchNote">MTD vs Budget</div>
+  </div>
+  <div class="rgrid" id="regionsGrid"></div>
+
+  <div class="shdr">
+    <div class="stitle">Location Detail</div>
+    <div class="snote">Click headers to sort</div>
+  </div>
+  <div class="twrap">
+    <div class="fbar" id="filterBar"></div>
+    <div style="overflow-x:auto">
+      <table>
+        <thead><tr>
+          <th onclick="sortBy('displayName')">Location <span class="sarr" id="sa-displayName">↕</span></th>
+          <th onclick="sortBy('region')">Region <span class="sarr" id="sa-region">↕</span></th>
+          <th class="num" onclick="sortBy('mtdActual')">MTD Actual <span class="sarr" id="sa-mtdActual">↕</span></th>
+          <th class="num" onclick="sortBy('mtdBudget')" title="Monthly budget ÷ days in month × days elapsed">MTD Budget (pro-rated) <span class="sarr" id="sa-mtdBudget">↕</span></th>
+          <th class="num" onclick="sortBy('mtdPct')">MTD % to Budget <span class="sarr" id="sa-mtdPct">↕</span></th>
+
+        </tr></thead>
+        <tbody id="tableBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="cpanel">
+    <div class="chdr" onclick="toggleConfig()">
+      <div class="ctitle">⚙ Data Configuration — Paste Evidence Actuals Here</div>
+      <div class="ctog" id="ctog">▼ expand</div>
+    </div>
+    <div class="cbody" id="cbody">
+      <div class="cinstr">
+        Paste your Evidence export below — one row per employee, comma- or tab-separated:
+        <code>Location</code>, <code>Month</code>, <code>AllHourlyPayroll</code>, <code>EmployeeName</code>.
+        Employees in the <strong>Exclusion List</strong> below are automatically removed before totals are calculated.
+        Click <strong>Apply Data</strong> to refresh the dashboard.
+      </div>
+      <div class="clbl2">Paste Evidence CSV/TSV data:</div>
+      <textarea class="parea" id="evidencePaste" placeholder="Location,Month,AllHourlyPayroll,EmployeeName&#10;Lakewood,Mar,965.00,Abigail Razo&#10;Lakewood,Mar,0.00,Adriana Estrada&#10;..."></textarea>
+      <div class="pstat" id="parseStatus"></div>
+      <button class="abtn" onclick="applyData()">Apply Data</button>
+
+      <div style="margin-top:28px;padding-top:20px;border-top:1px solid var(--border2)">
+        <div style="font-size:12px;font-weight:600;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;margin-bottom:8px;">Exclusion List — West Region Employees</div>
+        <div style="font-size:12px;color:var(--muted);margin-bottom:10px;line-height:1.6;">
+          These employees are excluded from All Hourly Payroll totals regardless of what Evidence reports.
+          One name per line, must match exactly as it appears in Evidence.
+        </div>
+        <textarea class="parea" id="exclusionList" style="min-height:200px;font-size:11px;" oninput="syncExclusions()"></textarea>
+        <div style="font-size:11px;color:var(--muted);margin-top:6px;font-family:'DM Mono',monospace;" id="exclusionCount"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="footnote">
+    As of <span id="footerDate">—</span> &nbsp;·&nbsp;
+    West exclusions applied by employee name &nbsp;·&nbsp;
+    MTD Budget = monthly budget ÷ days in month × days elapsed &nbsp;·&nbsp;
+    Auto-refreshes daily
+  </div>
+</div>
+
+<script>
+// ── CONFIG ────────────────────────────────────────────────────────────────────
+const REGIONS = {
+  South:   { color:'#f472b6', locs:['Allen','Druid_Hills','Frisco','Johns_Creek','Plano'] },
+  East:    { color:'#38bdf8', locs:['Dulles','Fairfax','Falls_Church','Germantown','Springfield','Chantilly'] },
+  Midwest: { color:'#a78bfa', locs:['Buffalo_Grove','Chicago_Northcenter','Hoffman_Estates','Niles','Wilmette','Gilbert'] },
+  West:    { color:'#34d399', locs:['Lakewood','Point_Loma','Torrance','Tustin','Huntington_Beach'] },
+};
+
+const DISPLAY = {
+  Allen:'Allen', Druid_Hills:'North Druid Hills', Frisco:'Frisco',
+  Johns_Creek:'Johns Creek', Plano:'Plano', Chantilly:'Chantilly',
+  Dulles:'Dulles', Fairfax:'Fairfax', Falls_Church:'Falls Church',
+  Germantown:'Germantown', Springfield:'Springfield',
+  Buffalo_Grove:'Buffalo Grove', Chicago_Northcenter:'Chicago North Center',
+  Hoffman_Estates:'Hoffman Estates', Niles:'Niles', Wilmette:'Wilmette', Gilbert:'Gilbert',
+  Lakewood:'Lakewood', Point_Loma:'San Diego \u2013 Point Loma',
+  Torrance:'Torrance', Tustin:'Tustin', Huntington_Beach:'Huntington Beach',
+};
+
+const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const MONTH_END = {
+  Jan:'2026-01-31',Feb:'2026-02-28',Mar:'2026-03-31',Apr:'2026-04-30',
+  May:'2026-05-31',Jun:'2026-06-30',Jul:'2026-07-31',Aug:'2026-08-31',
+  Sep:'2026-09-30',Oct:'2026-10-31',Nov:'2026-11-30',Dec:'2026-12-31'
+};
+
+// ── BUDGET DATA ───────────────────────────────────────────────────────────────
+const BUDGET = {
+  Allen:               {Jan:21720.53,Feb:21408.10,Mar:25878.68,Apr:25456.33,May:26451.56,Jun:30442.33,Jul:29904.53,Aug:31669.25,Sep:27497.45,Oct:26929.95,Nov:25692.89,Dec:20190.72},
+  Druid_Hills:         {Jan:13124.62,Feb:12741.04,Mar:15987.12,Apr:15919.40,May:17293.64,Jun:17029.18,Jul:16346.28,Aug:17404.34,Sep:16271.68,Oct:16027.68,Nov:16385.36,Dec:12667.49},
+  Buffalo_Grove:       {Jan:25416.51,Feb:22512.08,Mar:25003.08,Apr:24561.93,May:23038.34,Jun:24308.66,Jul:24108.13,Aug:25384.57,Sep:21989.12,Oct:22633.31,Nov:22754.15,Dec:18128.50},
+  Chantilly:           {Jan:20476.64,Feb:19486.89,Mar:22204.91,Apr:22396.24,May:23230.86,Jun:22143.75,Jul:19282.41,Aug:23102.80,Sep:21479.41,Oct:21351.73,Nov:21743.19,Dec:17483.53},
+  Chicago_Northcenter: {Jan:32881.43,Feb:31570.22,Mar:37429.49,Apr:36456.10,May:37584.10,Jun:35695.60,Jul:35311.41,Aug:36986.24,Sep:31731.24,Oct:33292.40,Nov:33478.72,Dec:27160.05},
+  Dulles:              {Jan:20628.04,Feb:19002.20,Mar:22689.22,Apr:21929.88,May:24639.85,Jun:26050.37,Jul:24529.13,Aug:24766.54,Sep:20740.53,Oct:21211.81,Nov:20750.46,Dec:17101.38},
+  Fairfax:             {Jan:25605.14,Feb:22312.88,Mar:25632.13,Apr:26772.86,May:24429.36,Jun:29180.24,Jul:25580.53,Aug:28471.42,Sep:25879.76,Oct:28088.25,Nov:26008.79,Dec:20474.75},
+  Falls_Church:        {Jan:30298.96,Feb:29123.84,Mar:34297.61,Apr:30789.77,May:32317.98,Jun:29984.38,Jul:27131.28,Aug:29082.02,Sep:25533.56,Oct:28575.33,Nov:28839.82,Dec:23212.89},
+  Frisco:              {Jan:25761.27,Feb:25049.36,Mar:29881.73,Apr:28289.04,May:30395.43,Jun:32421.15,Jul:30664.43,Aug:31451.45,Sep:26458.28,Oct:29044.26,Nov:29719.88,Dec:23206.34},
+  Germantown:          {Jan:21702.05,Feb:20500.64,Mar:24235.30,Apr:24485.07,May:23090.48,Jun:25413.75,Jul:24757.14,Aug:25094.21,Sep:22649.32,Oct:23664.76,Nov:23605.18,Dec:18969.53},
+  Gilbert:             {Jan:12265.09,Feb:11776.18,Mar:14652.63,Apr:14397.90,May:15194.55,Jun:16982.47,Jul:17412.50,Aug:17722.10,Sep:15580.85,Oct:15535.13,Nov:15622.10,Dec:13120.81},
+  Hoffman_Estates:     {Jan:17450.23,Feb:13884.28,Mar:18053.55,Apr:16133.23,May:18323.29,Jun:20268.70,Jul:19561.08,Aug:21820.58,Sep:19742.53,Oct:17194.48,Nov:20963.05,Dec:15945.31},
+  Huntington_Beach:    {Jan:23852.63,Feb:22460.42,Mar:25624.51,Apr:25860.10,May:27583.93,Jun:28228.43,Jul:29744.52,Aug:31498.26,Sep:30861.60,Oct:29945.20,Nov:28322.63,Dec:21689.13},
+  Johns_Creek:         {Jan:23998.21,Feb:21803.66,Mar:27983.51,Apr:29173.00,May:28974.48,Jun:29423.75,Jul:28620.82,Aug:29285.64,Sep:26876.46,Oct:26609.83,Nov:25868.40,Dec:20428.25},
+  Lakewood:            {Jan:31629.15,Feb:28328.82,Mar:32018.93,Apr:31231.22,May:31367.63,Jun:32962.25,Jul:30664.41,Aug:30563.62,Sep:25662.40,Oct:26699.23,Nov:25999.29,Dec:20999.12},
+  Niles:               {Jan:18453.67,Feb:17589.98,Mar:21648.34,Apr:20996.02,May:22938.66,Jun:21784.35,Jul:21954.73,Aug:22389.50,Sep:19477.01,Oct:20344.43,Nov:20158.58,Dec:16390.56},
+  Plano:               {Jan:16345.73,Feb:16072.54,Mar:19216.65,Apr:20040.59,May:21859.23,Jun:22626.36,Jul:21398.05,Aug:23406.15,Sep:20630.85,Oct:18712.85,Nov:20724.06,Dec:14931.73},
+  Point_Loma:          {Jan:24444.69,Feb:23309.94,Mar:26151.25,Apr:27313.38,May:27568.87,Jun:25815.22,Jul:27045.90,Aug:28159.60,Sep:22490.02,Oct:25722.73,Nov:28113.58,Dec:22488.15},
+  Springfield:         {Jan:29554.01,Feb:30282.01,Mar:39353.36,Apr:36797.78,May:37656.96,Jun:41217.57,Jul:39852.03,Aug:43942.94,Sep:37454.79,Oct:31607.59,Nov:31537.54,Dec:24086.57},
+  Torrance:            {Jan:33795.79,Feb:31276.08,Mar:35759.40,Apr:33178.11,May:33160.03,Jun:34518.48,Jul:31932.48,Aug:31619.40,Sep:26362.00,Oct:27442.09,Nov:26691.57,Dec:21513.23},
+  Tustin:              {Jan:24677.44,Feb:24290.11,Mar:28024.42,Apr:26258.38,May:28701.66,Jun:34259.92,Jul:33380.23,Aug:33770.50,Sep:29093.18,Oct:30494.14,Nov:28825.97,Dec:23881.03},
+  Wilmette:            {Jan:20134.76,Feb:18854.06,Mar:22620.43,Apr:18044.62,May:19240.56,Jun:18672.46,Jul:16857.50,Aug:17717.37,Sep:16805.31,Oct:19295.40,Nov:19545.67,Dec:16193.29},
+};
+
+// ── WEST EXCLUSION LIST ──────────────────────────────────────────────────────
+var EXCLUDED_EMPLOYEES = [
+  'Adriana Estrada',
+  'Una Mandapat',
+  'Ivan Jimenez',
+  'Julianna Gutierrez',
+  'Lauren Garcia',
+  'Anna Zook',
+  'Joelle Bergstrand',
+  'Nicole Espinoza',
+  'Caitlyn Atnip',
+  'Derek Miley',
+  'Kelly Fisher',
+  'Jade Garcia',
+];
+
+// ── ACTUALS (Evidence, Mar 19 2026) ─────────────────────────────────────────
+let ACTUALS = {
+  Allen:               {Mar:13858.20},
+  Druid_Hills:         {Mar:8630.20},
+  Buffalo_Grove:       {Mar:13438.00},
+  Chantilly:           {Mar:11263.20},
+  Chicago_Northcenter: {Mar:20590.50},
+  Dulles:              {Mar:11025.00},
+  Fairfax:             {Mar:15392.00},
+  Falls_Church:        {Mar:16735.80},
+  Frisco:              {Mar:15899.20},
+  Germantown:          {Mar:12720.00},
+  Gilbert:             {Mar:8346.80},
+  Hoffman_Estates:     {Mar:10839.40},
+  Huntington_Beach:    {Mar:16668.60},
+  Johns_Creek:         {Mar:14389.00},
+  Lakewood:            {Mar:19855.70},  // Jade Garcia ($96.00) now excluded
+  Niles:               {Mar:11082.60},
+  Plano:               {Mar:9775.50},
+  Point_Loma:          {Mar:15209.80},
+  Springfield:         {Mar:19151.80},
+  Torrance:            {Mar:23157.80},
+  Tustin:              {Mar:19481.40},
+  Wilmette:            {Mar:13137.00},
+};
+
+// ── HELPERS ───────────────────────────────────────────────────────────────────
+function getInfo() {
+  var d = new Date();
+  var mo = d.getMonth();
+  var month = MONTHS[mo];
+  var daysInMonth = new Date(d.getFullYear(), mo + 1, 0).getDate();
+  var daysElapsed = d.getDate();
+  var pctElapsed = daysElapsed / daysInMonth * 100;
+  return { d:d, month:month, daysInMonth:daysInMonth, daysElapsed:daysElapsed, pctElapsed:pctElapsed };
+}
+
+function f$(n) {
+  if (n == null || isNaN(n)) return '\u2014';
+  return '$' + Math.round(n).toLocaleString();
+}
+
+function pct(a, b) {
+  if (!b) return null;
+  return a / b * 100;
+}
+
+function colorClass(p) {
+  if (p == null) return '';
+  if (p <= 100) return 'good';
+  if (p <= 105) return 'warn';
+  return 'bad';
+}
+
+function regionOf(loc) {
+  var keys = Object.keys(REGIONS);
+  for (var i = 0; i < keys.length; i++) {
+    if (REGIONS[keys[i]].locs.indexOf(loc) !== -1) return keys[i];
+  }
+  return '\u2014';
+}
+
+function rColor(r) { return REGIONS[r] ? REGIONS[r].color : '#888'; }
+
+// ── METRICS ───────────────────────────────────────────────────────────────────
+function calcMetrics(loc, info) {
+  var bud = BUDGET[loc] || {};
+  var act = ACTUALS[loc] || {};
+  var month = info.month;
+  var daysInMonth = info.daysInMonth;
+  var daysElapsed = info.daysElapsed;
+
+
+  var fullBudget = bud[month] || 0;
+  var mtdBudget  = fullBudget / daysInMonth * daysElapsed;
+  var mtdActual  = (act[month] != null) ? act[month] : null;
+  var mtdPct     = (mtdActual != null) ? pct(mtdActual, mtdBudget) : null;
+
+  return {
+    loc: loc,
+    displayName: DISPLAY[loc] || loc,
+    region: regionOf(loc),
+    mtdBudget: mtdBudget,
+    mtdActual: mtdActual,
+    mtdPct: mtdPct,
+  };
+}
+
+// ── SORT / FILTER STATE ───────────────────────────────────────────────────────
+var sortKey = 'region', sortDir = 1, filterRegion = 'All';
+
+// ── MAIN RENDER ───────────────────────────────────────────────────────────────
+function render() {
+  var info = getInfo();
+  var d = info.d;
+  var month = info.month;
+  var daysInMonth = info.daysInMonth;
+  var daysElapsed = info.daysElapsed;
+  var pctElapsed = info.pctElapsed;
+
+  document.getElementById('headerSub').textContent =
+    '2026 \u00b7 Month ending ' + MONTH_END[month];
+  document.getElementById('monthLabel').textContent = month + ' 2026';
+  document.getElementById('lastRefresh').textContent =
+    'Refreshed ' + d.toLocaleDateString('en-US',{month:'short',day:'numeric'}) +
+    ' ' + d.toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'});
+  document.getElementById('footerDate').textContent =
+    d.toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'});
+  document.getElementById('benchNote').textContent =
+    'MTD vs Budget \u00b7 Day ' + daysElapsed + ' of ' + daysInMonth + ' \u00b7 ' + pctElapsed.toFixed(1) + '% through ' + month;
+
+  var locs = Object.keys(BUDGET);
+  var metrics = [];
+  for (var i = 0; i < locs.length; i++) {
+    metrics.push(calcMetrics(locs[i], info));
+  }
+
+  renderCards(metrics, info);
+  renderRegions(metrics, info);
+  renderFilterBar();
+  renderTable(metrics, info);
+}
+
+// ── SUMMARY CARDS ─────────────────────────────────────────────────────────────
+function renderCards(metrics, info) {
+  var month = info.month;
+  var daysElapsed = info.daysElapsed;
+  var daysInMonth = info.daysInMonth;
+  var pctElapsed = info.pctElapsed;
+
+  var mtdBudTotal = 0, mtdActTotal = 0, hasAct = false;
+  for (var i = 0; i < metrics.length; i++) {
+    var m = metrics[i];
+    mtdBudTotal += m.mtdBudget;
+    if (m.mtdActual != null) { mtdActTotal += m.mtdActual; hasAct = true; }
+  }
+
+  var mtdPct = hasAct ? pct(mtdActTotal, mtdBudTotal) : null;
+  var overBudget = metrics.filter(function(x){return x.mtdPct!=null && x.mtdPct>100;}).length;
+
+  var cards = [
+    {
+      label: 'MTD Budget (pro-rated)',
+      value: f$(mtdBudTotal),
+      sub: 'Day ' + daysElapsed + ' of ' + daysInMonth + ' \u00b7 ' + pctElapsed.toFixed(1) + '% of ' + month,
+      cls: ''
+    },
+    {
+      label: 'MTD Actual',
+      value: hasAct ? f$(mtdActTotal) : 'No data yet',
+      sub: mtdPct != null ? mtdPct.toFixed(1) + '% of pro-rated budget' : 'Paste actuals below \u2193',
+      cls: colorClass(mtdPct)
+    },
+    {
+      label: 'Locations Reporting',
+      value: metrics.filter(function(x){return x.mtdActual!=null;}).length + ' / ' + metrics.length,
+      sub: 'with actuals loaded',
+      cls: ''
+    },
+    {
+      label: 'Over Pro-rated Budget',
+      value: overBudget + ' location' + (overBudget !== 1 ? 's' : ''),
+      sub: overBudget > 0 ? 'MTD actual exceeds budget pace' : 'All locations on pace \u2713',
+      cls: overBudget > 0 ? 'bad' : 'good'
+    },
+  ];
+
+  var html = '';
+  for (var i = 0; i < cards.length; i++) {
+    var c = cards[i];
+    html += '<div class="card"><div class="clbl">' + c.label + '</div>' +
+            '<div class="cval ' + c.cls + '">' + c.value + '</div>' +
+            '<div class="csub">' + c.sub + '</div></div>';
+  }
+  document.getElementById('summaryCards').innerHTML = html;
+}
+
+// ── REGION CARDS ──────────────────────────────────────────────────────────────
+function renderRegions(metrics, info) {
+  var pctElapsed = info.pctElapsed;
+  var rKeys = Object.keys(REGIONS);
+  var html = '';
+
+  for (var ri = 0; ri < rKeys.length; ri++) {
+    var region = rKeys[ri];
+    var rd = REGIONS[region];
+    var locs = [];
+    for (var i = 0; i < metrics.length; i++) {
+      if (metrics[i].region === region) locs.push(metrics[i]);
+    }
+
+    var mtdBud = 0, mtdAct = 0, hasMtd = false;
+    for (var i = 0; i < locs.length; i++) {
+      mtdBud += locs[i].mtdBudget;
+      if (locs[i].mtdActual != null) { mtdAct += locs[i].mtdActual; hasMtd = true; }
+    }
+
+    var mtdP = hasMtd ? pct(mtdAct, mtdBud) : null;
+    var mtdCls = colorClass(mtdP);
+
+    var barW = mtdP != null ? Math.min(mtdP, 120) : 0;
+    var barC = mtdP == null ? 'var(--border2)' :
+               mtdP <= 100 ? 'var(--success)' :
+               mtdP <= 105 ? 'var(--warn)' : 'var(--danger)';
+
+    html += '<div class="rcard">' +
+      '<div class="rhdr">' +
+        '<div class="rname" style="color:' + rd.color + '">' + region + '</div>' +
+        '<div class="rbg" style="background:' + rd.color + '22;color:' + rd.color + '">' + locs.length + ' location' + (locs.length > 1 ? 's' : '') + '</div>' +
+      '</div>' +
+      '<div class="rmets">' +
+        '<div><div class="mlbl">MTD Actual</div><div class="mval ' + mtdCls + '">' + (hasMtd ? f$(mtdAct) : '\u2014') + '</div><div class="msub">Budget: ' + f$(mtdBud) + '</div></div>' +
+        '<div><div class="mlbl">MTD % to Budget</div><div class="mval ' + mtdCls + '">' + (mtdP != null ? mtdP.toFixed(1) + '%' : '\u2014') + '</div><div class="msub">' + (mtdP != null ? (mtdP <= 100 ? 'Under budget \u2713' : 'Over budget') : 'No actuals') + '</div></div>' +
+      '</div>' +
+      '<div class="pbar"><div class="pfill" style="width:' + Math.min(barW/1.2*100,100) + '%;background:' + barC + '"></div></div>' +
+    '</div>';
+  }
+  document.getElementById('regionsGrid').innerHTML = html;
+}
+
+// ── FILTER BAR ────────────────────────────────────────────────────────────────
+function renderFilterBar() {
+  var regions = ['All'].concat(Object.keys(REGIONS));
+  var html = '';
+  for (var i = 0; i < regions.length; i++) {
+    var r = regions[i];
+    var color = r === 'All' ? 'var(--accent)' : rColor(r);
+    var active = filterRegion === r;
+    var style = active ? 'background:' + color + ';border-color:' + color + ';color:#fff' : '';
+    html += '<button class="fbtn' + (active ? ' active' : '') + '" style="' + style + '" onclick="setFilter(\'' + r + '\')">' + r + '</button>';
+    if (i === 0) html += '<div class="fsep"></div>';
+  }
+  document.getElementById('filterBar').innerHTML = html;
+}
+
+// ── TABLE ─────────────────────────────────────────────────────────────────────
+function renderTable(metrics, info) {
+  var rows = [];
+  for (var i = 0; i < metrics.length; i++) {
+    if (filterRegion === 'All' || metrics[i].region === filterRegion) rows.push(metrics[i]);
+  }
+
+  rows.sort(function(a, b) {
+    var av = a[sortKey], bv = b[sortKey];
+    if (av == null) av = sortDir > 0 ? 1e9 : -1e9;
+    if (bv == null) bv = sortDir > 0 ? 1e9 : -1e9;
+    if (typeof av === 'string') return sortDir * av.localeCompare(bv);
+    return sortDir * (av - bv);
+  });
+
+  var html = '';
+  for (var i = 0; i < rows.length; i++) {
+    var m = rows[i];
+    var rc = rColor(m.region);
+    var mtdCls = colorClass(m.mtdPct);
+    var mtdPill = m.mtdPct != null
+      ? '<div class="pcell"><span class="pill ' + mtdCls + '">' + m.mtdPct.toFixed(1) + '%</span></div>'
+      : '<span class="nd">\u2014</span>';
+    html += '<tr>' +
+      '<td><span class="rdot" style="background:' + rc + '"></span>' + m.displayName + '</td>' +
+      '<td style="color:' + rc + ';font-weight:500">' + m.region + '</td>' +
+      '<td class="num">' + (m.mtdActual != null ? f$(m.mtdActual) : '<span class="nd">\u2014</span>') + '</td>' +
+      '<td class="num">' + f$(m.mtdBudget) + '</td>' +
+      '<td class="num">' + mtdPill + '</td>' +
+    '</tr>';
+  }
+  document.getElementById('tableBody').innerHTML = html;
+}
+
+// ── INTERACTIONS ──────────────────────────────────────────────────────────────
+function sortBy(key) {
+  if (sortKey === key) sortDir *= -1; else { sortKey = key; sortDir = 1; }
+  var arrows = document.querySelectorAll('.sarr');
+  for (var i = 0; i < arrows.length; i++) { arrows[i].textContent = '\u2195'; arrows[i].classList.remove('on'); }
+  var el = document.getElementById('sa-' + key);
+  if (el) { el.textContent = sortDir > 0 ? '\u2191' : '\u2193'; el.classList.add('on'); }
+  render();
+}
+
+function setFilter(r) { filterRegion = r; render(); }
+
+function toggleConfig() {
+  var b = document.getElementById('cbody');
+  var t = document.getElementById('ctog');
+  b.classList.toggle('open');
+  t.textContent = b.classList.contains('open') ? '\u25b2 collapse' : '\u25bc expand';
+}
+
+// ── EVIDENCE PASTE PARSER ─────────────────────────────────────────────────────
+var NAME_MAP = {
+  'atlanta_north_druid_hills':'Druid_Hills','atlanta___north_druid_hills':'Druid_Hills',
+  'north_druid_hills':'Druid_Hills','druid_hills':'Druid_Hills',
+  'chicago___north_center':'Chicago_Northcenter','chicago_north_center':'Chicago_Northcenter',
+  'chicago__north_center':'Chicago_Northcenter','chicago_northcenter':'Chicago_Northcenter',
+  'san_diego___point_loma':'Point_Loma','san_diego_point_loma':'Point_Loma','point_loma':'Point_Loma',
+  'buffalo_grove':'Buffalo_Grove','falls_church':'Falls_Church',
+  'johns_creek':'Johns_Creek','hoffman_estates':'Hoffman_Estates','huntington_beach':'Huntington_Beach',
+};
+
+function normLoc(raw) {
+  var key = raw.trim().replace(/[\s\-]+/g,'_').toLowerCase().replace(/[^a-z0-9_]/g,'');
+  return NAME_MAP[key] || raw.trim().replace(/[\s\-]+/g,'_').replace(/[^a-zA-Z0-9_]/g,'');
+}
+
+function applyData() {
+  var raw = document.getElementById('evidencePaste').value.trim();
+  var status = document.getElementById('parseStatus');
+  if (!raw) { status.textContent = '\u26a0 Nothing to parse.'; status.className = 'pstat err'; return; }
+
+  try {
+    var newActuals = {};
+    var lines = raw.split('\n');
+    var parsed = 0, skipped = 0;
+
+    for (var i = 0; i < lines.length; i++) {
+      var line = lines[i].trim();
+      if (!line || /^location/i.test(line)) continue;
+      var parts = line.split(/,|\t/);
+      if (parts.length < 3) { skipped++; continue; }
+
+      var loc = normLoc(parts[0]);
+      var monthRaw = parts[1].trim();
+      var month = null;
+
+      var mMatch = monthRaw.match(/^(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)/i);
+      if (mMatch) month = mMatch[0].charAt(0).toUpperCase() + mMatch[0].slice(1).toLowerCase();
+      if (!month) {
+        var numMatch = monthRaw.match(/(\d{1,2})/);
+        if (numMatch) { var idx = parseInt(numMatch[1]) - 1; if (idx >= 0 && idx < 12) month = MONTHS[idx]; }
+      }
+      if (!month) { skipped++; continue; }
+
+      var val = parseFloat(parts[2].trim().replace(/[$,]/g,''));
+      if (isNaN(val)) { skipped++; continue; }
+
+      // Check if this employee is in the exclusion list
+      var empName = parts.length >= 4 ? parts[3].trim() : '';
+      var isExcluded = false;
+      if (empName) {
+        var empLower = empName.toLowerCase();
+        for (var ei = 0; ei < EXCLUDED_EMPLOYEES.length; ei++) {
+          if (empLower === EXCLUDED_EMPLOYEES[ei].toLowerCase()) { isExcluded = true; break; }
+        }
+      }
+      if (isExcluded) { skipped++; continue; }
+
+      if (!newActuals[loc]) newActuals[loc] = {};
+      newActuals[loc][month] = (newActuals[loc][month] || 0) + val;
+      parsed++;
+    }
+
+    if (parsed === 0) {
+      status.textContent = '\u2717 No valid rows. Format: Location, Month, AllHourlyPayroll';
+      status.className = 'pstat err'; return;
+    }
+
+    ACTUALS = newActuals;
+    status.textContent = '\u2713 Loaded ' + parsed + ' records across ' + Object.keys(newActuals).length + ' locations.' + (skipped ? ' (' + skipped + ' skipped)' : '');
+    status.className = 'pstat ok';
+    render();
+  } catch(e) {
+    status.textContent = '\u2717 Error: ' + e.message;
+    status.className = 'pstat err';
+  }
+}
+
+function syncExclusions() {
+  var ta = document.getElementById('exclusionList');
+  if (!ta) return;
+  var lines = ta.value.split('\n').map(function(l){return l.trim();}).filter(Boolean);
+  // Update the live exclusion list
+  window.EXCLUDED_EMPLOYEES_LIVE = lines;
+  var countEl = document.getElementById('exclusionCount');
+  if (countEl) countEl.textContent = lines.length + ' employee' + (lines.length !== 1 ? 's' : '') + ' excluded';
+}
+
+function getExclusionList() {
+  // Use live list if edited, otherwise fall back to EXCLUDED_EMPLOYEES constant
+  return window.EXCLUDED_EMPLOYEES_LIVE || EXCLUDED_EMPLOYEES;
+}
+
+// Override applyData to use live exclusion list
+var _origApplyData = applyData;
+applyData = function() {
+  // patch EXCLUDED_EMPLOYEES reference to use live list
+  var orig = EXCLUDED_EMPLOYEES.slice();
+  var live = getExclusionList();
+  EXCLUDED_EMPLOYEES.length = 0;
+  live.forEach(function(e){ EXCLUDED_EMPLOYEES.push(e); });
+  _origApplyData();
+  EXCLUDED_EMPLOYEES.length = 0;
+  orig.forEach(function(e){ EXCLUDED_EMPLOYEES.push(e); });
+};
+
+// ── BOOT ──────────────────────────────────────────────────────────────────────
+render();
+
+// Populate exclusion list textarea on load
+(function() {
+  var ta = document.getElementById('exclusionList');
+  if (ta) {
+    ta.value = EXCLUDED_EMPLOYEES.join('\n');
+    syncExclusions();
+  }
+}());
+
+// Auto-refresh at midnight each day
+(function scheduleRefresh() {
+  var now = new Date();
+  var midnight = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 0, 0, 5);
+  var delay = midnight - now;
+  setTimeout(function() { render(); scheduleRefresh(); }, delay);
+}());
+</script>
+</body>
+</html>
