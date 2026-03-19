@@ -9,7 +9,7 @@
 <style>
   :root {
     --bg:        #EEF6FF;
-    --surface:   #FFFFFF;
+    --surface:   #FFFFFF
     --surface2:  #F0F7FF;
     --border:    #C8DFF7;
     --border2:   #A8C8F0;
@@ -163,13 +163,13 @@
 const locations = [
   { name: 'Springfield',       region: 'DC Metro',  wk: [19,6,7,4,3,1] },
   { name: 'Falls Church',      region: 'DC Metro',  wk: [2,5,8,4,1,4] },
-  { name: 'Fairfax',           region: 'DC Metro',  wk: [2,9,0,1,5,4] },
+  { name: 'Fairfax',           region: 'DC Metro',  wk: [2,9,0,1,5,5] },
   { name: 'Chantilly',         region: 'DC Metro',  wk: [1,8,2,2,0,7] },
   { name: 'Dulles',            region: 'DC Metro',  wk: [3,4,0,3,5,1] },
   { name: 'Germantown',        region: 'DC Metro',  wk: [0,9,0,5,0,2] },
   { name: 'Plano',             region: 'South',     wk: [8,11,8,4,8,0] },
   { name: 'Allen',             region: 'South',     wk: [1,12,2,6,5,2] },
-  { name: 'Johns Creek',       region: 'South',     wk: [2,10,1,6,5,0] },
+  { name: 'Johns Creek',       region: 'South',     wk: [2,10,1,6,5,1] },
   { name: 'North Druid Hills', region: 'South',     wk: [1,7,7,6,0,0] },
   { name: 'Frisco',            region: 'South',     wk: [1,1,8,4,2,1] },
   { name: 'Gilbert',           region: 'Southwest', wk: [2,16,4,10,10,1] },
@@ -177,11 +177,11 @@ const locations = [
   { name: 'Tustin',            region: 'West',      wk: [7,3,0,4,5,2] },
   { name: 'Point Loma',        region: 'West',      wk: [2,3,1,5,4,3] },
   { name: 'Huntington Beach',  region: 'West',      wk: [1,1,6,0,0,3] },
-  { name: 'Lakewood',          region: 'West',      wk: [2,0,2,4,4,0] },
+  { name: 'Lakewood',          region: 'West',      wk: [2,0,2,4,4,1] },
   { name: 'Buffalo Grove',     region: 'Chicago',   wk: [4,8,3,6,4,5] },
-  { name: 'Chicago N. Center', region: 'Chicago',   wk: [0,4,5,0,4,4] },
-  { name: 'Wilmette',          region: 'Chicago',   wk: [5,8,2,0,0,1] },
-  { name: 'Hoffman Estates',   region: 'Chicago',   wk: [1,6,1,1,1,0] },
+  { name: 'Chicago N. Center', region: 'Chicago',   wk: [0,4,5,0,4,5] },
+  { name: 'Wilmette',          region: 'Chicago',   wk: [5,8,2,0,0,3] },
+  { name: 'Hoffman Estates',   region: 'Chicago',   wk: [1,6,1,1,1,1] },
   { name: 'Niles',             region: 'Chicago',   wk: [3,2,2,0,1,2] },
 ];
 
@@ -264,14 +264,14 @@ function setR(r,el){ activeR=r; document.querySelectorAll('.rtab').forEach(t=>t.
 
 function buildSchool(){
   if(schoolChart) schoolChart.destroy();
-  const s = locations.filter(l=>l.region===activeR).sort((a,b)=>tot(b)-tot(a));
+  const s = locations.filter(l=>l.regio===activeR).sort((a,b)=>tot(b)-tot(a));
   const c = rColors[activeR];
   schoolChart = new Chart(document.getElementById('schoolChart'),{
     type:'bar',
     data:{ labels:s.map(x=>x.name), datasets:[{ data:s.map(x=>tot(x)), backgroundColor:c+'55', borderColor:c, borderWidth:2, borderRadius:5 }] },
     options:{ indexAxis:'y', responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}},
       scales:{ x:{ticks:{color:'#5A7A9A',font:{size:10}},grid:{color:'#D6EEFC'},border:{display:false}}, y:{ticks:{color:'#0A2540',font:{size:11,weight:'700'}},grid:{display:false},border:{display:false}} } }
-  });
+  })
 }
 buildSchool();
 
