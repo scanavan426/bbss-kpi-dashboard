@@ -264,7 +264,7 @@ function setR(r,el){ activeR=r; document.querySelectorAll('.rtab').forEach(t=>t.
 
 function buildSchool(){
   if(schoolChart) schoolChart.destroy();
-  const s = locations.filter(l=>l.regio===activeR).sort((a,b)=>tot(b)-tot(a));
+  const s = locations.filter(l=>l.region===activeR).sort((a,b)=>tot(b)-tot(a));
   const c = rColors[activeR];
   schoolChart = new Chart(document.getElementById('schoolChart'),{
     type:'bar',
