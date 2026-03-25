@@ -45,7 +45,7 @@
   .live-dot { width: 7px; height: 7px; border-radius: 50%; background: #00C48C; animation: pulse 2s infinite; }
   @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
 
-  .kpi-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 10px; margin-bottom: 1.25rem; }
+  .kpi-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 10px; margin-bottom: 1.25rem; }
   .kpi { background: var(--surface); border-radius: 14px; border: 1.5px solid var(--border); padding: 1rem 1.1rem; position: relative; overflow: hidden; transition: box-shadow 0.2s; }
   .kpi:hover { box-shadow: 0 4px 18px rgba(0,87,184,0.1); border-color: var(--border2); }
   .kpi::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 3px; border-radius: 0 0 12px 12px; }
@@ -116,10 +116,10 @@
       <div class="logo-mark">BB</div>
       <div class="header-left">
         <h1>Clinic Sales Dashboard</h1>
-        <p>BIG BLUE SWIM SCHOOL &nbsp;·&nbsp; 2026 YTD &nbsp;·&nbsp; WEEKS 1–5 &nbsp;·&nbsp; 22 LOCATIONS · 6 REGIONS</p>
+        <p>BIG BLUE SWIM SCHOOL &nbsp;·&nbsp; 2026 YTD &nbsp;·&nbsp; WEEKS 1–7 &nbsp;·&nbsp; 22 LOCATIONS · 6 REGIONS</p>
       </div>
     </div>
-    <div class="live-badge"><div class="live-dot"></div>Week 5 in progress</div>
+    <div class="live-badge"><div class="live-dot"></div>Week 7 in progress</div>
   </header>
 
   <div class="kpi-grid" id="kpiGrid"></div>
@@ -161,34 +161,34 @@
 
 <script>
 const locations = [
-  { name: 'Springfield',       region: 'East',  wk: [19,6,7,4,3,8] },
-  { name: 'Falls Church',      region: 'East',  wk: [2,5,8,4,1,15] },
-  { name: 'Fairfax',           region: 'East',  wk: [2,9,0,1,5,12] },
-  { name: 'Chantilly',         region: 'East',  wk: [1,8,2,2,0,9] },
-  { name: 'Dulles',            region: 'East',  wk: [3,4,0,3,5,4] },
-  { name: 'Germantown',        region: 'East',  wk: [0,9,0,5,0,6] },
-  { name: 'Plano',             region: 'South',     wk: [8,11,8,4,8,0] },
-  { name: 'Allen',             region: 'South',     wk: [1,12,2,6,5,2] },
-  { name: 'Johns Creek',       region: 'South',     wk: [2,10,1,6,5,6] },
-  { name: 'North Druid Hills', region: 'South',     wk: [1,7,7,6,0,1] },
-  { name: 'Frisco',            region: 'South',     wk: [1,1,8,4,2,1] },
-  { name: 'Gilbert',           region: 'Southwest', wk: [2,16,4,10,10,1] },
-  { name: 'Torrance',          region: 'West',      wk: [3,12,7,2,3,8] },
-  { name: 'Tustin',            region: 'West',      wk: [7,3,0,4,5,9] },
-  { name: 'Point Loma',        region: 'West',      wk: [2,3,1,5,4,10] },
-  { name: 'Huntington Beach',  region: 'West',      wk: [1,1,6,0,0,4] },
-  { name: 'Lakewood',          region: 'West',      wk: [2,0,2,4,4,4] },
-  { name: 'Buffalo Grove',     region: 'Chicago',   wk: [4,8,3,6,4,8] },
-  { name: 'Chicago N. Center', region: 'Chicago',   wk: [0,4,5,0,4,5] },
-  { name: 'Wilmette',          region: 'Chicago',   wk: [5,8,2,0,0,5] },
-  { name: 'Hoffman Estates',   region: 'Chicago',   wk: [1,6,1,1,1,2] },
-  { name: 'Niles',             region: 'Chicago',   wk: [3,2,2,0,1,2] },
+  { name: 'Springfield',       region: 'East',  wk: [19,6,7,4,3,8,3,5] },
+  { name: 'Falls Church',      region: 'East',  wk: [2,5,8,4,1,15,9,6] },
+  { name: 'Fairfax',           region: 'East',  wk: [2,9,0,1,5,12,10,2] },
+  { name: 'Chantilly',         region: 'East',  wk: [1,8,2,2,0,9,9,0] },
+  { name: 'Dulles',            region: 'East',  wk: [3,4,0,3,5,4,2,2] },
+  { name: 'Germantown',        region: 'East',  wk: [0,9,0,5,0,6,6,0] },
+  { name: 'Plano',             region: 'South',     wk: [8,11,8,4,8,0,0,0] },
+  { name: 'Allen',             region: 'South',     wk: [1,12,2,6,5,2,2,0] },
+  { name: 'Johns Creek',       region: 'South',     wk: [2,10,1,6,5,6,4,2] },
+  { name: 'North Druid Hills', region: 'South',     wk: [1,7,7,6,0,1,1,0] },
+  { name: 'Frisco',            region: 'South',     wk: [1,1,8,4,2,1,1,0] },
+  { name: 'Gilbert',           region: 'Southwest', wk: [2,16,4,10,10,1,1,0] },
+  { name: 'Torrance',          region: 'West',      wk: [3,12,7,2,3,8,8,0] },
+  { name: 'Tustin',            region: 'West',      wk: [7,3,0,4,5,9,4,5] },
+  { name: 'Point Loma',        region: 'West',      wk: [2,3,1,5,4,10,7,3] },
+  { name: 'Huntington Beach',  region: 'West',      wk: [1,1,6,0,0,4,3,1] },
+  { name: 'Lakewood',          region: 'West',      wk: [2,0,2,4,4,4,2,1] },
+  { name: 'Buffalo Grove',     region: 'Chicago',   wk: [4,8,3,6,4,8,7,1] },
+  { name: 'Chicago N. Center', region: 'Chicago',   wk: [0,4,5,0,4,5,5,0] },
+  { name: 'Wilmette',          region: 'Chicago',   wk: [5,8,2,0,0,5,5,0] },
+  { name: 'Hoffman Estates',   region: 'Chicago',   wk: [1,6,1,1,1,2,2,0] },
+  { name: 'Niles',             region: 'Chicago',   wk: [3,2,2,0,1,2,2,0] },
 ];
 
 const regions   = ['East','South','Southwest','West','Chicago'];
 const rColors   = { 'East':'#0057B8','South':'#1A8FE3','Southwest':'#0096C7','West':'#00B4D8','Chicago':'#2EC4E0' };
 const rBg       = { 'East':'#0057B840','South':'#1A8FE340','Southwest':'#0096C740','West':'#00B4D840','Chicago':'#2EC4E040' };
-const weekDates = ['2/9–2/14','2/15–2/21','2/22–2/28','3/1–3/7','3/8–3/14','3/15–24*'];
+const weekDates = ['2/9–2/14','2/15–2/21','2/22–2/28','3/1–3/7','3/8–3/14','3/15–3/21','3/22–3/28*'];
 
 const tot   = l => l.wk.reduce((a,b)=>a+b,0);
 const grand = locations.reduce((s,l)=>s+tot(l),0);
@@ -211,8 +211,8 @@ document.getElementById('kpiGrid').innerHTML = [
 
 // Weeks
 document.getElementById('weekGrid').innerHTML = wkTot.map((v,i) => {
-  const cls = v===bestW?'best':i===5?'partial':'';
-  return `<div class="week-cell"><div class="wc-label">Week ${i<4?i+1:i===4?'5a':'5b'}</div><div class="wc-val ${cls}">${v}</div><div class="wc-date">${weekDates[i]}</div></div>`;
+  const cls = v===bestW?'best':i===6?'partial':'';
+  return `<div class="week-cell"><div class="wc-label">Week ${i+1}</div><div class="wc-val ${cls}">${v}</div><div class="wc-date">${weekDates[i]}</div></div>`;
 }).join('');
 
 // Stacked bar + line
