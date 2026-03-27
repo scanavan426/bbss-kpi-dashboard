@@ -136,7 +136,7 @@
         <div class="donut-canvas">
           <canvas id="donutChart" width="150" height="150"></canvas>
           <div class="donut-center">
-            <div class="donut-num" id="dNum">578</div>
+            <div class="donut-num" id="dNum">—</div>
             <div class="donut-sub">total</div>
           </div>
         </div>
@@ -250,6 +250,7 @@ new Chart(document.getElementById('donutChart'), {
     onHover:(evt,els)=>{ document.getElementById('dNum').textContent = els.length?rTotals[els[0].index]:grand; }
   }
 });
+document.getElementById('dNum').textContent = grand;
 document.getElementById('donutLegend').innerHTML = regions.map((r,i)=>
   `<div class="dl-row"><span class="dl-dot" style="background:${rColors[r]}"></span><span class="dl-name">${r}</span><span class="dl-val">${rTotals[i]}</span><span class="dl-pct">${((rTotals[i]/grand)*100).toFixed(1)}%</span></div>`
 ).join('');
