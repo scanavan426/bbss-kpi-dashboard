@@ -45,7 +45,7 @@
   .live-dot { width: 7px; height: 7px; border-radius: 50%; background: #00C48C; animation: pulse 2s infinite; }
   @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
 
-  .kpi-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 10px; margin-bottom: 1.25rem; }
+  .kpi-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 10px; margin-bottom: 1.25rem; }
   .kpi { background: var(--surface); border-radius: 14px; border: 1.5px solid var(--border); padding: 1rem 1.1rem; position: relative; overflow: hidden; transition: box-shadow 0.2s; }
   .kpi:hover { box-shadow: 0 4px 18px rgba(0,87,184,0.1); border-color: var(--border2); }
   .kpi::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 3px; border-radius: 0 0 12px 12px; }
@@ -59,7 +59,7 @@
   .kpi-value { font-size: 1.9rem; font-weight: 900; color: var(--text); letter-spacing: -0.03em; line-height: 1; }
   .kpi-sub { font-family: 'DM Mono', monospace; font-size: 0.58rem; color: var(--muted); margin-top: 5px; }
 
-  .week-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px; margin-bottom: 1.25rem; }
+  .week-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; margin-bottom: 1.25rem; }
   .week-cell { background: var(--surface); border: 1.5px solid var(--border); border-radius: 10px; padding: 10px 8px; text-align: center; }
   .wc-label { font-size: 0.56rem; font-weight: 800; color: var(--muted); text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 4px; }
   .wc-val { font-size: 1.5rem; font-weight: 900; color: var(--bb-cobalt); letter-spacing: -0.02em; }
@@ -161,28 +161,28 @@
 
 <script>
 const locations = [
-  { name: 'Springfield',       region: 'East',  wk: [19,6,7,4,3,8,3,5] },
-  { name: 'Falls Church',      region: 'East',  wk: [2,5,8,4,1,15,9,6] },
-  { name: 'Fairfax',           region: 'East',  wk: [2,9,0,1,5,12,10,2] },
-  { name: 'Chantilly',         region: 'East',  wk: [1,8,2,2,0,9,9,0] },
-  { name: 'Dulles',            region: 'East',  wk: [3,4,0,3,5,4,2,2] },
-  { name: 'Germantown',        region: 'East',  wk: [0,9,0,5,0,6,6,0] },
-  { name: 'Plano',             region: 'South',     wk: [8,11,8,4,8,0,0,0] },
-  { name: 'Allen',             region: 'South',     wk: [1,12,2,6,5,2,2,0] },
-  { name: 'Johns Creek',       region: 'South',     wk: [2,10,1,6,5,6,4,2] },
-  { name: 'North Druid Hills', region: 'South',     wk: [1,7,7,6,0,1,1,0] },
-  { name: 'Frisco',            region: 'South',     wk: [1,1,8,4,2,1,1,0] },
-  { name: 'Gilbert',           region: 'Southwest', wk: [2,16,4,10,10,1,1,0] },
-  { name: 'Torrance',          region: 'West',      wk: [3,12,7,2,3,8,8,0] },
-  { name: 'Tustin',            region: 'West',      wk: [7,3,0,4,5,9,4,5] },
-  { name: 'Point Loma',        region: 'West',      wk: [2,3,1,5,4,10,7,3] },
-  { name: 'Huntington Beach',  region: 'West',      wk: [1,1,6,0,0,4,3,1] },
-  { name: 'Lakewood',          region: 'West',      wk: [2,0,2,4,4,4,2,1] },
-  { name: 'Buffalo Grove',     region: 'Chicago',   wk: [4,8,3,6,4,8,7,1] },
-  { name: 'Chicago N. Center', region: 'Chicago',   wk: [0,4,5,0,4,5,5,0] },
-  { name: 'Wilmette',          region: 'Chicago',   wk: [5,8,2,0,0,5,5,0] },
-  { name: 'Hoffman Estates',   region: 'Chicago',   wk: [1,6,1,1,1,2,2,0] },
-  { name: 'Niles',             region: 'Chicago',   wk: [3,2,2,0,1,2,2,0] },
+  { name: 'Springfield',       region: 'East',  wk: [19,6,7,4,3,3,5] },
+  { name: 'Falls Church',      region: 'East',  wk: [2,5,8,4,1,9,6] },
+  { name: 'Fairfax',           region: 'East',  wk: [2,9,0,1,5,10,2] },
+  { name: 'Chantilly',         region: 'East',  wk: [1,8,2,2,0,9,0] },
+  { name: 'Dulles',            region: 'East',  wk: [3,4,0,3,5,2,2] },
+  { name: 'Germantown',        region: 'East',  wk: [0,9,0,5,0,6,0] },
+  { name: 'Plano',             region: 'South',     wk: [8,11,8,4,8,0,0] },
+  { name: 'Allen',             region: 'South',     wk: [1,12,2,6,5,2,0] },
+  { name: 'Johns Creek',       region: 'South',     wk: [2,10,1,6,5,4,2] },
+  { name: 'North Druid Hills', region: 'South',     wk: [1,7,7,6,0,1,0] },
+  { name: 'Frisco',            region: 'South',     wk: [1,1,8,4,2,1,0] },
+  { name: 'Gilbert',           region: 'Southwest', wk: [2,16,4,10,10,1,0] },
+  { name: 'Torrance',          region: 'West',      wk: [3,12,7,2,3,8,0] },
+  { name: 'Tustin',            region: 'West',      wk: [7,3,0,4,5,4,5] },
+  { name: 'Point Loma',        region: 'West',      wk: [2,3,1,5,4,7,3] },
+  { name: 'Huntington Beach',  region: 'West',      wk: [1,1,6,0,0,3,1] },
+  { name: 'Lakewood',          region: 'West',      wk: [2,0,2,4,4,2,1] },
+  { name: 'Buffalo Grove',     region: 'Chicago',   wk: [4,8,3,6,4,7,1] },
+  { name: 'Chicago N. Center', region: 'Chicago',   wk: [0,4,5,0,4,5,0] },
+  { name: 'Wilmette',          region: 'Chicago',   wk: [5,8,2,0,0,5,0] },
+  { name: 'Hoffman Estates',   region: 'Chicago',   wk: [1,6,1,1,1,2,0] },
+  { name: 'Niles',             region: 'Chicago',   wk: [3,2,2,0,1,2,0] },
 ];
 
 const regions   = ['East','South','Southwest','West','Chicago'];
